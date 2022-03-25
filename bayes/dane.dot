@@ -1,0 +1,25 @@
+digraph Graph{
+5 -> 24[label="nie_zamawiac_ksztaltek"] [color = blue];
+6 -> 23[label="n=1000"] [color = blue];
+6 -> 22[label="n=2000"] [color = blue];
+7 -> 21[label="n=1000"] [color = blue];
+7 -> 20[label="n=2000"] [color = blue];
+8 -> 19[label="dluga_przerwa"] [color = blue];
+8 -> 18[label="krotka_przerwa"] [color = blue];
+9 -> 17[label="dluga_przerwa"] [color = blue];
+9 -> 16[label="krotka_przerwa"] [color = blue];
+10 -> 15[label="dluga_przerwa"] [color = blue];
+10 -> 14[label="krotka_przerwa"] [color = blue];
+11 -> 13[label="dluga_przerwa"] [color = blue];
+11 -> 12[label="krotka_przerwa"] [color = blue];
+4 -> 2[label="zla_koniunktura_na_jesien"] [color = blue];
+4 -> 3[label="dobra_koniunktura_na_jesien"] [color = blue];
+1 -> 5[label="xa"] [color = blue];
+1 -> 6[label="xb"] [color = blue];
+1 -> 7[label="xc"] [color = blue];
+1 -> 4[label="xd"] [color = blue];
+2 -> 8[label="xe_zamowienie_1000_szt"] [color = blue];
+2 -> 9[label="xf_2000_szt"] [color = blue];
+3 -> 10[label="xe_1000_szt"] [color = blue];
+3 -> 11[label="xf_2000_szt"] [color = blue];
+}
