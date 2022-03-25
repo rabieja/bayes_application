@@ -1,6 +1,6 @@
 #include "bayes_graph_plugin.h"
 
-
+#include <gvc.h>
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -112,6 +112,7 @@ void bayes_graph_plugin::run()
 		cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
 	}
 
+
 	// dot -Tpng dane.dot -o dane.png
 	ofstream save("dane.dot");
 	int value_to_graph = 5;
@@ -123,6 +124,21 @@ void bayes_graph_plugin::run()
 	save << "}";
 
 	save.close();
+
+	GVC_t* gvc;
+	Agraph_t* g;
+	FILE* fp;
+	gvc = gvContext();
+	fp = fopen("dane.dot", "r");
+	g = agread(fp, 0);
+	gvLayout(gvc, g, "dot");
+	gvRenderFilename(gvc, g, "png", "out.png");
+
+	gvFreeLayout(gvc, g);
+	agclose(g);
+	cout << gvFreeContext(gvc);
+
+
 }
 /*
 vector <vertex> bayes_graph_plugin::generate_graph_from_file()
