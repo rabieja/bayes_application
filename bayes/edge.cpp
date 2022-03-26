@@ -9,6 +9,5 @@ bool edge::is_root()
 void edge::set_value()
 {
     this->next->set_value();
-    cout << "ccc";
     return;
 }

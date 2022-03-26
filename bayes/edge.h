@@ -14,5 +14,7 @@ public:
 	bool is_root();
 	void set_value();
 	virtual double get_value() = 0;
+	virtual double get_probability() = 0;
+	string type;
 };
 

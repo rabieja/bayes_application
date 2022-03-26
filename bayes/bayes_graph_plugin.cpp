@@ -112,34 +112,12 @@ void bayes_graph_plugin::run()
 		cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
 	}
 
+	string file_name = "dane";
 
-	// dot -Tpng dane.dot -o dane.png
-	ofstream save("dane.dot");
-	int value_to_graph = 5;
-	save << "digraph Graph{" << endl;
-	for (int i = 25; i <= 47; i++) {
-		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
-		save << edges_map[i]->prev->id << " -> " << edges_map[i]->next->id << "[label=\"" << edges_map[i]->description << "\"] " << "[color = blue];" << endl;
-	}
-	save << "}";
-
-	save.close();
-
-	GVC_t* gvc;
-	Agraph_t* g;
-	FILE* fp;
-	gvc = gvContext();
-	fp = fopen("dane.dot", "r");
-	g = agread(fp, 0);
-	gvLayout(gvc, g, "dot");
-	gvRenderFilename(gvc, g, "png", "out.png");
-
-	gvFreeLayout(gvc, g);
-	agclose(g);
-	cout << gvFreeContext(gvc);
-
-
+	bayes_graph_engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
+	bayes_graph_engine.create_png_graph(file_name);
 }
+
 /*
 vector <vertex> bayes_graph_plugin::generate_graph_from_file()
 {

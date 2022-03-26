@@ -12,7 +12,6 @@ class bayes_graph_plugin
 public:
 	bayes_graph_engine engine;
 	void run();
-
 };
 
 #endif

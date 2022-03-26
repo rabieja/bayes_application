@@ -11,5 +11,6 @@ public:
 	bool is_node();
 	bool is_edge();
 	double get_value();
+	double get_probability();
 };
 
