@@ -40,7 +40,7 @@ void bayes_graph_plugin::run()
 		if (type == "end_node") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> end_node_value;
-				cout << id << " " << end_node_value << endl;
+			//	cout << id << " " << end_node_value << endl;
 				node* node_element = new end_node(id, end_node_value);
 				nodes_map.insert(pair<int, node*>( id, node_element));
 				tree.push_back(node_element);
@@ -48,7 +48,7 @@ void bayes_graph_plugin::run()
 		}else if(type == "chance_node") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> chance_node_description;
-				cout << id << " " << chance_node_description << endl;
+			//	cout << id << " " << chance_node_description << endl;
 				node* node_element = new chance_node(id, chance_node_description);
 				nodes_map.insert(pair<int, node*>(id, node_element));
 				tree.push_back(node_element);
@@ -58,12 +58,12 @@ void bayes_graph_plugin::run()
 			for (int i = 0; i <= size - 1; i++) {
 				bool is_root = false;
 				data_file >> id >> decision_node_description >> root;
-				cout << id << " " << chance_node_description << " " << root << endl;
+			//	cout << id << " " << decision_node_description << " " << root << endl;
 				if (root == 'y') {
 					is_root = true;
 				}
 				else is_root = false;
-				node* node_element = new decision_node(id, is_root, chance_node_description);
+				node* node_element = new decision_node(id, is_root, decision_node_description);
 
 				nodes_map.insert(pair<int, node*>(id, node_element));
 				tree.push_back(node_element);
@@ -72,7 +72,7 @@ void bayes_graph_plugin::run()
 		else if (type == "edge_chance") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> prev_tree_element >> next_tree_element >> probability >> edge_description;
-				cout << id << " " << prev_tree_element << " " << next_tree_element << " " << probability << " " << edge_description << endl;
+			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << probability << " " << edge_description << endl;
 				edge* edge_element = new chance_edge(id, nodes_map.find(prev_tree_element)->second, 
 					nodes_map.find(next_tree_element)->second, probability, edge_description);
 
@@ -89,7 +89,7 @@ void bayes_graph_plugin::run()
 		else if (type == "edge_decision") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> prev_tree_element >> next_tree_element >> edge_description;
-				cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
+			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
 				edge* edge_element = new decision_edge(id, nodes_map.find(prev_tree_element)->second,
 					nodes_map.find(next_tree_element)->second, edge_description);
 

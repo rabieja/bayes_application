@@ -60,7 +60,7 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "DECISION") {
-			save << iter->second->id << "[shape=square label=\" " << iter->second->value << "\"];" << endl;
+			save << iter->second->id << "[shape=square  label=\" " << iter->second->value << "\"];" << endl;
 		}
 		else if (iter->second->type == "CHANCE") {
 			save << iter->second->id << "[shape=circle label=\" " << iter->second->value << "\"];" << endl;
