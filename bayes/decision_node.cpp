@@ -4,6 +4,7 @@
 #include "tree_element.h"
 #include <limits>
 #include <iostream>
+#include "decision_edge.h"
 
 const double lowest_double = -std::numeric_limits<double>::max();
 using namespace std;
@@ -36,23 +37,20 @@ bool decision_node::is_root()
 void decision_node::set_value()
 {
 	double this_value = lowest_double;
-	cout << this->id << " " << this->next.size() << endl;
+	tree_element *edge = this;
 	for (int i = 0; i <= this->next.size() - 1; i++) {
-		cout << this->next[i]->id << endl;
-	}
-	for (int i = 0; i <= this->next.size() - 1; i++) {
-		cout << this->next[i]->get_value() << this->next[i]->is_edge() << endl;
 		if (this->next[i]->is_edge()) {
 			double value = this->next[i]->get_value();
 			if (value == NULL) {
-				cout << "aaa";
 				this->next[i]->set_value();
-				cout << "bbb";
 				value = this->next[i]->get_value();
 			}
-			cout << this_value << " " << value << endl;
+			if (value >= this_value) {
+				edge = this->next[i];
+			}
 			this_value = max(this_value, value);
 		}
 	}this->value = this_value;
+	edge->set_winner();
 	return;
 }

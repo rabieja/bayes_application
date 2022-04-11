@@ -13,5 +13,6 @@ public:
 	virtual bool is_root() = 0;
 	virtual void set_value() = 0;
 	virtual double get_value() = 0;
+	virtual void set_winner() = 0;
 };
 

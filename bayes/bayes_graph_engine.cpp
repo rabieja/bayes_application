@@ -56,7 +56,8 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 {
 	// dot -Tpng dane.dot -o dane.png
 	ofstream save(file_name + ".dot");
-	save << "digraph Graph{" << endl;
+	save << "strict graph{" << endl;
+	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "DECISION") {
 			save << iter->second->id << "[shape=square label=\" " << iter->second->value << "\"];" << endl;
@@ -71,10 +72,13 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
 		if (iter->second->type == "DECISION") {
-			save << iter->second->prev->id << " -> " << iter->second->next->id << "[label=\"" << iter->second->description << "\"] " << "[color = black];" << endl;
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << "\"] ";
+			if (iter->second->winner) {
+				save << "[color = red];" << endl;
+			}else save << "[color = black];" << endl;
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->prev->id << " -> " << iter->second->next->id << "[label=\"" << iter->second->description << " " << 
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << " " << 
 				iter->second->get_probability() << "\"] " << "[color = black];" << endl;
 		}
 	}

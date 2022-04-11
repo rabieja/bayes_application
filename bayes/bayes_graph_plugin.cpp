@@ -109,7 +109,7 @@ void bayes_graph_plugin::run()
 	bayes_graph_engine.find_decision(tree);
 
 	for (int i = 1; i <= 24; i++) {
-		cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
+	//	cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
 	}
 
 	string file_name = "dane";

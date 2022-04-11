@@ -7,6 +7,7 @@ decision_edge::decision_edge(int id, tree_element* prev, tree_element* next, str
 	this->next = next;
 	this->description = description;
 	this->type = "DECISION";
+	this->winner = false;
 }
 
 bool decision_edge::is_node()
@@ -27,4 +28,9 @@ double decision_edge::get_value()
 double decision_edge::get_probability()
 {
 	return 1.0;
+}
+
+void decision_edge::set_winner()
+{
+	this->winner = true;
 }

@@ -9,6 +9,7 @@ chance_edge::chance_edge(int id, tree_element* prev, tree_element* next, double 
 	this->description = description;
 	this->probability = probability;
 	this->type = "CHANCE";
+	this->winner = false;
 }
 
 bool chance_edge::is_node()
