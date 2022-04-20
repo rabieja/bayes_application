@@ -21,36 +21,46 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 
 }
 
-void bayes_graph_engine::validation(map<int, edge*> edges, map<int, node*> nodes)
+bool bayes_graph_engine::validation(map<int, edge*> edges, map<int, node*> nodes)
 {
 	setlocale(LC_CTYPE, "Polish");
-	validate_nodes(nodes);
-	validate_edges(edges);
+	if (!validate_nodes(nodes) || !validate_edges(edges)) {
+		return false;
+	}
+
+	return true;
 }
 
-void bayes_graph_engine::validate_nodes(map<int, node*> nodes)
+bool bayes_graph_engine::validate_nodes(map<int, node*> nodes)
 {
 	string description = "";
+	bool result = true;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		description = iter->second->description;
 		if (!iter->second->is_root() && iter->second->prev == NULL) {
 			cout << "Wprowadzone dane sa nieprawid³owe, wêze³ \" " << description << " \" nie posiada poprzednika." << endl;
+			result = false;
 		}
 	}
+	return result;
 }
 
-void bayes_graph_engine::validate_edges(map<int, edge*> edges)
+bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 {
+	bool result = true;
 	string description = "";
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		description = iter->second->description;
-		if (iter->second->prev == NULL) {
+		if (!iter->second->prev == NULL) {
 			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada poprzednika." << endl;
+			result = false;
 		}
 		if (iter->second->next == NULL) {
 			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada nastêpnika." << endl;
+			result = false;
 		}
 	}
+	return result;
 }
 
 

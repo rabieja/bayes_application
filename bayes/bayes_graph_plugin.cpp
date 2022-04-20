@@ -16,6 +16,7 @@
 #include "decision_edge.h"
 #include "bayes_graph_engine.h"
 
+
 using namespace std;
 
 
@@ -117,16 +118,17 @@ void bayes_graph_plugin::run()
 	}
 	data_file.close();
 
-	bayes_graph_engine.validation(edges_map, nodes_map);
-	bayes_graph_engine.find_decision(tree);
+	if (bayes_graph_engine.validation(edges_map, nodes_map)) {
+		bayes_graph_engine.find_decision(tree);
 
-	for (int i = 1; i <= 24; i++) {
-	//	cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
+		for (int i = 1; i <= 24; i++) {
+				//	cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
+		}
+
+		string file_name = "dane";
+
+		bayes_graph_engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
+		bayes_graph_engine.create_png_graph(file_name);
 	}
-
-	string file_name = "dane";
-
-	bayes_graph_engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
-	bayes_graph_engine.create_png_graph(file_name);
 }
 
