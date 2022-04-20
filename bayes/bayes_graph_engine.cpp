@@ -51,7 +51,7 @@ bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 	string description = "";
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		description = iter->second->description;
-		if (!iter->second->prev == NULL) {
+		if (iter->second->prev == NULL) {
 			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada poprzednika." << endl;
 			result = false;
 		}
