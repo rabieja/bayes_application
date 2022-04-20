@@ -16,5 +16,6 @@ public:
 	tree_element* find_root(vector<tree_element*>);
 	int create_png_graph(string);
 	void create_dot_graph(string, vector<tree_element*>, map <int, edge*>,	map <int, node*>);
+	void find_winner_trace(tree_element*);
 };
 

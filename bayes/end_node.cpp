@@ -23,3 +23,8 @@ bool end_node::is_root()
 {
 	return false;
 }
+
+void end_node::find_winner()
+{
+	return;
+}

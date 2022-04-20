@@ -19,6 +19,6 @@ public:
 	virtual bool is_root() = 0;
 	virtual void set_value() = 0;
 	double get_value();
-	virtual void set_winner() = 0;
+	virtual void find_winner() = 0;
 };
 

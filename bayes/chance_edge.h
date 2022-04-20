@@ -12,6 +12,5 @@ public:
 	bool is_edge();
 	double get_value();
 	double get_probability();
-	void set_winner() {};
 };
 

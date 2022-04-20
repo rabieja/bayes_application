@@ -15,9 +15,11 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 	tree_element* root = find_root(tree);
 	if (root != NULL) {
 		set_value(root);
+		find_winner_trace(root);
 	}
 
 }
+
 
 void bayes_graph_engine::set_value(tree_element* element)
 {
@@ -60,30 +62,44 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "DECISION") {
-			save << iter->second->id << "[shape=square  label=\" " << iter->second->value << "\"];" << endl;
+			save << iter->second->id << "[shape=square  label=\" " << iter->second->value << "\" ] " << endl;
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->id << "[shape=circle label=\" " << iter->second->value << "\"];" << endl;
+			save << iter->second->id << "[shape=circle label=\" " << iter->second->value << "\"] " << endl;
 		}
 		else {
-			save << iter->second->id << "[shape=none label=\" " << iter->second->value << "\"];" << endl;
+			save << iter->second->id << "[shape=none label=\" " << iter->second->value << "\"] " << endl;
 		}
+		if (iter->second->winner) {
+			save << "[color = red];" << endl;
+		}
+		else save << "[color = black];" << endl;
 	}
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
 		if (iter->second->type == "DECISION") {
 			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << "\"] ";
-			if (iter->second->winner) {
-				save << "[color = red];" << endl;
-			}else save << "[color = black];" << endl;
+
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << " " << 
-				iter->second->get_probability() << "\"] " << "[color = black];" << endl;
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << " " <<
+				iter->second->get_probability() << "\"] ";
 		}
+		if (iter->second->winner) {
+			save << "[color = red];" << endl;
+		}
+		else save << "[color = black];" << endl;
 	}
 	save << "}";
 
 	save.close();
+}
+
+void bayes_graph_engine::find_winner_trace(tree_element* element)
+{
+	if (element->is_node() && element->is_root()) {
+		element->set_winner();
+		element->find_winner();
+	}
 }
 

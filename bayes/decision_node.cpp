@@ -37,7 +37,6 @@ bool decision_node::is_root()
 void decision_node::set_value()
 {
 	double this_value = lowest_double;
-	tree_element *edge = this;
 	for (int i = 0; i <= this->next.size() - 1; i++) {
 		if (this->next[i]->is_edge()) {
 			double value = this->next[i]->get_value();
@@ -45,12 +44,37 @@ void decision_node::set_value()
 				this->next[i]->set_value();
 				value = this->next[i]->get_value();
 			}
-			if (value >= this_value) {
-				edge = this->next[i];
-			}
+
 			this_value = max(this_value, value);
 		}
 	}this->value = this_value;
-	edge->set_winner();
+	return;
+}
+
+void decision_node::find_winner() {
+
+	vector <tree_element*> next;
+	double this_value = lowest_double;
+
+	for (int i = 0; i <= this->next.size() - 1; i++) {
+		if (this->next[i]->is_edge()) {
+			double value = this->next[i]->get_value();
+
+			if (value == this_value) {
+				next.push_back(this->next[i]);
+			}
+			else if (value > this_value) {
+				next.clear();
+				next.push_back(this->next[i]);
+			}
+			this_value = max(this_value, value);
+		}
+	}
+
+	for (int i = 0; i <= next.size() - 1; i++) {
+		next[i]->set_winner();
+		next[i]->find_winner();
+	}
+
 	return;
 }

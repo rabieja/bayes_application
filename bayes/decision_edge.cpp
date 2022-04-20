@@ -36,8 +36,3 @@ double decision_edge::get_probability()
 {
 	return 1.0;
 }
-
-void decision_edge::set_winner()
-{
-	this->winner = true;
-}

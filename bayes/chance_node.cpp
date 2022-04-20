@@ -3,6 +3,7 @@
 #include "tree_element.h"
 #include <iostream>
 
+const double lowest_double = -std::numeric_limits<double>::max();
 using namespace std;
 
 chance_node::chance_node(int id, string description)
@@ -42,4 +43,32 @@ void chance_node::set_value()
 		}
 	}this->value = this_value;
 	return;
+}
+
+void chance_node::find_winner()
+{
+	vector <tree_element*> next;
+	double this_value = lowest_double;
+
+	for (int i = 0; i <= this->next.size() - 1; i++) {
+		if (this->next[i]->is_edge()) {
+			double value = this->next[i]->get_value();
+
+			if (value == this_value) {
+				next.push_back(this->next[i]);
+			}
+			else if (value > this_value) {
+				next.clear();
+				next.push_back(this->next[i]);
+			}
+			this_value = max(this_value, value);
+		}
+	}
+	for (int i = 0; i <= next.size() - 1; i++) {
+		next[i]->set_winner();
+		next[i]->find_winner();
+	}
+
+	return;
+
 }

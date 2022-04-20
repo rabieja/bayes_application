@@ -13,6 +13,5 @@ public:
 	double costs;
 	double get_value();
 	double get_probability();
-	void set_winner();
 };
 

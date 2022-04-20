@@ -10,6 +10,6 @@ public:
 	bool is_edge();
 	bool is_root();
 	void set_value() {};
-	void set_winner() {};
+	void find_winner();
 };
 
