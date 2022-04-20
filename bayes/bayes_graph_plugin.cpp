@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <istream>
 #include <map>
 #include <iostream>
 #include "edge.h"
@@ -47,8 +48,10 @@ void bayes_graph_plugin::run()
 			}continue;
 		}else if(type == "chance_node") {
 			for (int i = 0; i <= size - 1; i++) {
-				data_file >> id >> chance_node_description;
-			//	cout << id << " " << chance_node_description << endl;
+				data_file >> id;
+				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
+				getline(data_file, chance_node_description);
+				//cout << id << " " << chance_node_description << endl;
 				node* node_element = new chance_node(id, chance_node_description);
 				nodes_map.insert(pair<int, node*>(id, node_element));
 				tree.push_back(node_element);
@@ -57,7 +60,9 @@ void bayes_graph_plugin::run()
 		else if (type == "decision_node") {
 			for (int i = 0; i <= size - 1; i++) {
 				bool is_root = false;
-				data_file >> id >> decision_node_description >> root;
+				data_file >> id >> root;
+				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
+				getline(data_file, decision_node_description);
 			//	cout << id << " " << decision_node_description << " " << root << endl;
 				if (root == 'y') {
 					is_root = true;
@@ -71,7 +76,9 @@ void bayes_graph_plugin::run()
 		}
 		else if (type == "edge_chance") {
 			for (int i = 0; i <= size - 1; i++) {
-				data_file >> id >> prev_tree_element >> next_tree_element >> probability >> edge_description;
+				data_file >> id >> prev_tree_element >> next_tree_element >> probability;
+				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
+				getline(data_file, edge_description);
 			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << probability << " " << edge_description << endl;
 				edge* edge_element = new chance_edge(id, nodes_map.find(prev_tree_element)->second, 
 					nodes_map.find(next_tree_element)->second, probability, edge_description);
@@ -88,7 +95,9 @@ void bayes_graph_plugin::run()
 		}
 		else if (type == "edge_decision") {
 			for (int i = 0; i <= size - 1; i++) {
-				data_file >> id >> prev_tree_element >> next_tree_element >> edge_description;
+				data_file >> id >> prev_tree_element >> next_tree_element;
+				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
+				getline(data_file, edge_description);
 			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
 				edge* edge_element = new decision_edge(id, nodes_map.find(prev_tree_element)->second,
 					nodes_map.find(next_tree_element)->second, edge_description);
@@ -118,51 +127,3 @@ void bayes_graph_plugin::run()
 	bayes_graph_engine.create_png_graph(file_name);
 }
 
-/*
-vector <vertex> bayes_graph_plugin::generate_graph_from_file()
-{
-	fstream data_file;
-	int id, id_prev, size_nodes, node;
-	double value, nonvalue;
-	vector<pair<int, int>> edges_map;
-	map<int, vertex*> vertex_map;
-	vector <edge*> edges;
-
-	data_file.open("dane.txt");
-
-    while (!data_file.eof()) {
-		data_file >> id >> size_nodes;
-		for (int i = 0; i <= size_nodes - 1; i++) {
-			data_file >> node;
-		}
-		if (data_file.eof()) {
-			break;
-		}
-		data_file >> value;
-	//	cout << id << value << id_prev << endl;
-		edges_map.push_back(pair<int, int>(id, id_prev));
-		vertex_map.insert(pair<int, vertex*>(id, new vertex(id, value, nonvalue)));
-    }
-	data_file.close();
-
-	for (int i  = 0; i <= edges_map.size() - 1; i++) {
-			edges.push_back(new edge(vertex_map.find(edges_map[i].second)->second, vertex_map.find(edges_map[i].first)->second));
-	}
-	/*
-	// dot -Tpng dane.dot -o dane.png
-	ofstream save("dane.dot");
-	int value_to_graph = 5;
-	save << "digraph Graph{" << endl;
-	for (int i = 0; i <= edges.size() - 1; i++) {
-		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
-		save << edges[i]->prev->id << " -> " << edges[i]->next->id << "[label=\"" << value_to_graph << "\"] " << "[color = blue];" << endl;
-	}
-	save << "}";
-
-	save.close();
-	
-	vector <vertex> graph;
-	return graph;
-}
-
-*/
