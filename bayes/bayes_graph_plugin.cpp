@@ -117,6 +117,7 @@ void bayes_graph_plugin::run()
 	}
 	data_file.close();
 
+	bayes_graph_engine.validation(edges_map, nodes_map);
 	bayes_graph_engine.find_decision(tree);
 
 	for (int i = 1; i <= 24; i++) {

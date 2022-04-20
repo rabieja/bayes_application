@@ -7,6 +7,7 @@
 #include <map>
 #include <fstream>
 #include "chance_edge.h"
+#include <locale.h>
 
 using namespace std;
 
@@ -18,6 +19,38 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 		find_winner_trace(root);
 	}
 
+}
+
+void bayes_graph_engine::validation(map<int, edge*> edges, map<int, node*> nodes)
+{
+	setlocale(LC_CTYPE, "Polish");
+	validate_nodes(nodes);
+	validate_edges(edges);
+}
+
+void bayes_graph_engine::validate_nodes(map<int, node*> nodes)
+{
+	string description = "";
+	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+		description = iter->second->description;
+		if (!iter->second->is_root() && iter->second->prev == NULL) {
+			cout << "Wprowadzone dane sa nieprawid³owe, wêze³ \" " << description << " \" nie posiada poprzednika." << endl;
+		}
+	}
+}
+
+void bayes_graph_engine::validate_edges(map<int, edge*> edges)
+{
+	string description = "";
+	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
+		description = iter->second->description;
+		if (iter->second->prev == NULL) {
+			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada poprzednika." << endl;
+		}
+		if (iter->second->next == NULL) {
+			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada nastêpnika." << endl;
+		}
+	}
 }
 
 
