@@ -22,16 +22,18 @@ using namespace std;
 void bayes_graph_plugin::run()
 {
 	bayes_graph_engine bayes_graph_engine;
+
 	map <int, edge*> edges_map;
 	map <int, node*> nodes_map;
 	vector <tree_element*> tree;
-	fstream data_file;
-	data_file.open("dane.txt");
+
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
-	double end_node_value;
-	double probability;
+	double end_node_value, cost_of_additional_information, probability;
 	int size, id, prev_tree_element, next_tree_element;
+
+	fstream data_file;
+	data_file.open("dane.txt");
 
 	while (!data_file.eof()) {
 		data_file >> type >> size;
@@ -95,12 +97,12 @@ void bayes_graph_plugin::run()
 		}
 		else if (type == "edge_decision") {
 			for (int i = 0; i <= size - 1; i++) {
-				data_file >> id >> prev_tree_element >> next_tree_element;
+				data_file >> id >> prev_tree_element >> next_tree_element >> cost_of_additional_information;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
 				getline(data_file, edge_description);
 			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
 				edge* edge_element = new decision_edge(id, nodes_map.find(prev_tree_element)->second,
-					nodes_map.find(next_tree_element)->second, edge_description);
+					nodes_map.find(next_tree_element)->second, cost_of_additional_information, edge_description);
 
 				node* next = nodes_map.find(next_tree_element)->second;
 				next->add_prev_element(edge_element);

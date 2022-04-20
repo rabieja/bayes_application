@@ -68,19 +68,19 @@ Zła koniunktura na jesien
 39 4 3 0.5 
 Dobra koniunktura na jesien
 edge_decision 8
-40 1 5 
+40 1 5 1000
 xa
-41 1 6 
+41 1 6 2000
 xb
-42 1 7 
+42 1 7 10000
 xc
-43 1 4 
+43 1 4 1000
 xd
-44 2 8 
+44 2 8 1000
 xe zamowienie 1000 szt
-45 2 9 
+45 2 9 0
 xf_2000_szt
-46 3 10 
+46 3 10 0
 xe_1000_szt
-47 3 11 
+47 3 11 0
 xf_2000_szt
