@@ -10,6 +10,10 @@ using namespace std;
 class bayes_graph_plugin
 {
 public:
+	bayes_graph_plugin();
+	map <int, edge*> edges_map;
+	map <int, node*> nodes_map;
+	vector <tree_element*> tree;
 	bayes_graph_engine engine;
 	void run();
 };

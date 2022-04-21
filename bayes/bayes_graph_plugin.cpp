@@ -19,15 +19,21 @@
 
 using namespace std;
 
-
-void bayes_graph_plugin::run()
-{
-	bayes_graph_engine bayes_graph_engine;
+bayes_graph_plugin::bayes_graph_plugin() {
 	map <int, edge*> edges_map;
 	map <int, node*> nodes_map;
 	vector <tree_element*> tree;
 
+	bayes_graph_engine bayes_graph_engine;
+	this->engine = bayes_graph_engine;
 
+	this->edges_map = edges_map;
+	this->nodes_map = nodes_map;
+	this->tree = tree;
+}
+
+void bayes_graph_plugin::run()
+{
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
 	double end_node_value, cost_of_additional_information, probability;
@@ -118,8 +124,8 @@ void bayes_graph_plugin::run()
 	}
 	data_file.close();
 
-	if (bayes_graph_engine.validation(tree, edges_map, nodes_map)) {
-		bayes_graph_engine.find_decision(tree);
+	if (engine.validation(tree, edges_map, nodes_map)) {
+		engine.find_decision(tree);
 
 		for (int i = 1; i <= 24; i++) {
 				//	cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
@@ -127,8 +133,8 @@ void bayes_graph_plugin::run()
 
 		string file_name = "dane";
 
-		bayes_graph_engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
-		bayes_graph_engine.create_png_graph(file_name);
+		engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
+		engine.create_png_graph(file_name);
 	}
 }
 
