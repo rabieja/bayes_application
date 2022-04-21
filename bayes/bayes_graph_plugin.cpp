@@ -15,9 +15,10 @@
 #include "chance_edge.h"
 #include "decision_edge.h"
 #include "bayes_graph_engine.h"
-
+#include <locale.h>
 
 using namespace std;
+int id = 0;
 
 bayes_graph_plugin::bayes_graph_plugin() {
 	map <int, edge*> edges_map;
@@ -32,7 +33,7 @@ bayes_graph_plugin::bayes_graph_plugin() {
 	this->tree = tree;
 }
 
-void bayes_graph_plugin::generate_from_file(string file_name) {
+bool bayes_graph_plugin::generate_from_file(string file_name) {
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
 	double end_node_value, cost_of_additional_information, probability;
@@ -40,7 +41,9 @@ void bayes_graph_plugin::generate_from_file(string file_name) {
 
 	fstream data_file;
 	data_file.open(file_name);
-
+	if (!data_file) {
+		return false;
+	}
 	while (!data_file.eof()) {
 		data_file >> type >> size;
 		if (data_file.eof()) {
@@ -123,9 +126,12 @@ void bayes_graph_plugin::generate_from_file(string file_name) {
 		}
 	}
 	data_file.close();
+
+	return true;
 }
 
 void bayes_graph_plugin::generate_graph() {
+	string answer;
 	if (engine.validation(tree, edges_map, nodes_map)) {
 		engine.find_decision(tree);
 
@@ -133,12 +139,105 @@ void bayes_graph_plugin::generate_graph() {
 
 		engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
 		engine.create_png_graph(file_name);
+		cout << "Generowanie drzewa decyzyjnego przebieg³o pomyœlnie." << endl;
 	}
+	else {
+		cout << "Nie uda³o siê wygenerowaæ drzewa decyzyjnego. Czy chcesz zakoñczyæ pracê programu? (tak/nie)" << endl;
+		cin >> answer;
+		if (answer == "tak") {
+			exit(0);
+		}
+	}
+}
+void bayes_graph_plugin::generate_decision_node(bool root) {
+	string description;
+	id++;
+	cout << "Podaj opis wêz³a" << endl;
+	cin.ignore(numeric_limits < streamsize >::max(), '\n');
+	getline(cin, description);
+
+	node* node_element = new decision_node(id, root, description);
+
+	nodes_map.insert(pair<int, node*>(id, node_element));
+	tree.push_back(node_element);
+}
+
+void bayes_graph_plugin::generate_chance_node() {
+	string description;
+	id++;
+	cout << "Podaj opis wêz³a" << endl;
+	cin.ignore(numeric_limits < streamsize >::max(), '\n');
+	getline(cin, description);
+
+	node* node_element = new chance_node(id, description);
+	nodes_map.insert(pair<int, node*>(id, node_element));
+	tree.push_back(node_element);
+}
+
+void bayes_graph_plugin::generate_end_node() {
+	double value;
+	id++;
+	cout << "Podaj wartoœæ wêz³a" << endl;
+	cin >> value;
+
+	node* node_element = new end_node(id, value);
+	nodes_map.insert(pair<int, node*>(id, node_element));
+	tree.push_back(node_element);
 }
 void bayes_graph_plugin::run()
 {
+	setlocale(LC_CTYPE, "Polish");
+	string answer= "", data_file;
+	cout << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;
+	while (answer != "tak" && answer != "nie") {
+		cout << "Czy chcesz wygenerowaæ drzewo decyzyjne z danych zapisanych w pliku? (tak/nie)" << endl;
+		cin >> answer;
+		if (answer == "tak") {
+			cout << "Podaj œcie¿kê do pliku z którego chcesz wygenerowaæ drzewo..." << endl;
+			cin >> data_file;
+			while (!generate_from_file(data_file)) {
+				cout << "Podany plik nie istnieje. Podaj ponownie œcie¿kê do pliku" << endl;
+				cin >> data_file;
+			}
+			generate_graph();
+		}
+		else if (answer == "nie") {
+			string n_end = "", n_chance = "", n_decision = "", e_change = "", e_decision = "";
+			cout << "Zosta³ uruchomiony tryb rêcznego generowania danych." << endl;
+			cout << "Dodaj wêz³y decyzyjne..." << endl;
+			cout << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
+			generate_decision_node(true);
 
-	generate_from_file("dane.txt");
-	generate_graph();
+			cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
+			cin >> n_decision;
+			while (n_decision != "nie") {
+				generate_decision_node(false);
+				cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
+				cin >> n_decision;
+			}
+
+			cout << "Dodaj wêz³y losowe..." << endl;
+			cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
+			cin >> n_chance;
+			while (n_chance != "nie") {
+				generate_chance_node();
+				cout << "Czy chcesz dodaæ kolejny wêze³ losowy?" << endl;
+				cin >> n_chance;
+			}
+
+			cout << "Dodaj wêz³y koñcowe..." << endl;
+			cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
+			cin >> n_end;
+			while (n_end != "nie") {
+				generate_end_node();
+				cout << "Czy chcesz dodaæ kolejny wêze³ koñcowy?" << endl;
+				cin >> n_end;
+			}
+
+
+			generate_graph();
+		}
+	}
+
 }
 

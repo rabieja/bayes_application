@@ -15,8 +15,11 @@ public:
 	map <int, node*> nodes_map;
 	vector <tree_element*> tree;
 	bayes_graph_engine engine;
-	void generate_from_file(string file_name);
+	bool generate_from_file(string file_name);
 	void generate_graph();
+	void generate_decision_node(bool root);
+	void generate_chance_node();
+	void generate_end_node();
 	void run();
 };
 

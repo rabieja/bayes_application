@@ -34,7 +34,21 @@ bool bayes_graph_engine::validation(vector<tree_element*>& tree, map<int, edge*>
 
 bool bayes_graph_engine::validate_nodes(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges)
 {
-	return validate_prev_element(nodes) && validate_sum_probability(tree, nodes, edges);
+	return validate_prev_element(nodes) && validate_next_elements(nodes) && validate_sum_probability(tree, nodes, edges);
+}
+
+bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
+
+	string description = "";
+	bool result = true;
+	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+		description = iter->second->description;
+		if (iter->second->type != "END" && iter->second->next.empty()) {
+			cout << "Wprowadzone dane sa nieprawid³owe, wêze³ \" " << description << " \" nie posiada nastêpników." << endl;
+			result = false;
+		}
+	}
+	return result;
 }
 
 bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
@@ -71,7 +85,7 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 			else if (sum < 1) {
 				string answer;
 				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
-				cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)";
+				cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)" << endl;
 				cin >> answer;
 				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
 					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
