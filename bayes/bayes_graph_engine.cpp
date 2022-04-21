@@ -100,6 +100,7 @@ void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<i
 	id++;
 	edge* edge_element = new chance_edge(id, node_prev, node_element, probability, "");
 	edges.insert(pair<int, edge*>(id, edge_element));
+	tree.push_back(edge_element);
 
 	node_element->add_prev_element(edge_element);
 	node_prev->add_next_element(edge_element);
