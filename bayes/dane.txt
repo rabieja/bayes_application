@@ -53,7 +53,7 @@ Długa przerwa
 Krótka przerwa
 32 9 17 0.75 
 Długa przerwa
-33 9 16 0.25 
+33 9 16 0.20 
 Krótka przerwa
 34 10 15 0.1 
 Długa przerwa
@@ -65,18 +65,18 @@ Długa przerwa
 Krótka przerwa
 38 4 2 0.5 
 Zła koniunktura na jesien
-39 4 3 0.5 
+39 4 3 0.4 
 Dobra koniunktura na jesien
 edge_decision 8
 40 1 5 1000
 xa
-41 1 6 2000
+41 1 6 2000000
 xb
 42 1 7 10000
 xc
-43 1 4 1000
+43 1 4 10
 xd
-44 2 8 1000
+44 2 8 10000
 xe zamowienie 1000 szt
 45 2 9 0
 xf_2000_szt

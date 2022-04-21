@@ -1,6 +1,7 @@
 #include "bayes_graph_engine.h"
 #include "node.h"
 #include "edge.h"
+#include "end_node.h"
 #include <iostream>
 #include <gvc.h>
 #include <string>
@@ -21,18 +22,23 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 
 }
 
-bool bayes_graph_engine::validation(map<int, edge*> edges, map<int, node*> nodes)
+bool bayes_graph_engine::validation(vector<tree_element*>& tree, map<int, edge*>& edges, map<int, node*>& nodes)
 {
 	setlocale(LC_CTYPE, "Polish");
-	if (!validate_nodes(nodes) || !validate_edges(edges)) {
+	if (!validate_nodes(tree, nodes, edges) || !validate_edges(edges)) {
 		return false;
 	}
 
 	return true;
 }
 
-bool bayes_graph_engine::validate_nodes(map<int, node*> nodes)
+bool bayes_graph_engine::validate_nodes(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges)
 {
+	return validate_prev_element(nodes) && validate_sum_probability(tree, nodes, edges);
+}
+
+bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
+
 	string description = "";
 	bool result = true;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
@@ -45,6 +51,59 @@ bool bayes_graph_engine::validate_nodes(map<int, node*> nodes)
 	return result;
 }
 
+bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges) {
+
+	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+		if (iter->second->type == "CHANCE") {
+
+			double sum = 0;
+			for (int i = 0; i <= iter->second->next.size() - 1; i++) {
+				if (iter->second->next[i]->type != "CHANCE") {
+					cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << iter->second->next[i]->description << " \" jest z³ego typu. Wymagany typ to ga³¹Ÿ losowa." << endl;
+					return false;
+				}
+				else sum += iter->second->next[i]->get_probability();
+			}
+
+			if (sum > 1) {
+				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest wiêksza od 1.0." << endl;
+			}
+			else if (sum < 1) {
+				string answer;
+				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
+				cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)";
+				cin >> answer;
+				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
+					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
+				}
+				else return false;
+			}
+		}
+	}
+	return true;
+}
+
+int bayes_graph_engine::search_next_id(vector<tree_element*>& tree) {
+	int id=0;
+	for (int i = 0; i <= tree.size() - 1; i++) {
+		id = max(id, tree[i]->id);
+	}return id++;
+}
+void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges, node * node_prev, double probability) {
+
+	int id = search_next_id(tree);
+
+	node* node_element = new end_node(id, 0);
+	nodes.insert(pair<int, node*>(id, node_element));
+	tree.push_back(node_element);
+
+	id++;
+	edge* edge_element = new chance_edge(id, node_prev, node_element, probability, "");
+	edges.insert(pair<int, edge*>(id, edge_element));
+
+	node_element->add_prev_element(edge_element);
+	node_prev->add_next_element(edge_element);
+}
 bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 {
 	bool result = true;

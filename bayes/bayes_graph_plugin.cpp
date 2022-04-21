@@ -23,10 +23,10 @@ using namespace std;
 void bayes_graph_plugin::run()
 {
 	bayes_graph_engine bayes_graph_engine;
-
 	map <int, edge*> edges_map;
 	map <int, node*> nodes_map;
 	vector <tree_element*> tree;
+
 
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
@@ -118,7 +118,7 @@ void bayes_graph_plugin::run()
 	}
 	data_file.close();
 
-	if (bayes_graph_engine.validation(edges_map, nodes_map)) {
+	if (bayes_graph_engine.validation(tree, edges_map, nodes_map)) {
 		bayes_graph_engine.find_decision(tree);
 
 		for (int i = 1; i <= 24; i++) {

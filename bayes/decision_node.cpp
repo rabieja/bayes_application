@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "tree_element.h"
+#include "edge.h"
 #include <limits>
 #include <iostream>
 #include "decision_edge.h"
@@ -11,7 +12,7 @@ using namespace std;
 
 decision_node::decision_node(int id, bool root, string description)
 {
-	vector <tree_element*> next;
+	vector <edge*> next;
 	this->id = id;
 	this->root = root;
 	this->description = description;

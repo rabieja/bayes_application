@@ -1,6 +1,7 @@
 #include "chance_node.h"
 #include <vector>
 #include "tree_element.h"
+#include "edge.h"
 #include <iostream>
 
 const double lowest_double = -std::numeric_limits<double>::max();
@@ -8,7 +9,7 @@ using namespace std;
 
 chance_node::chance_node(int id, string description)
 {
-	vector <tree_element*> next;
+	vector <edge*> next;
 	this->id = id;
 	this->description = description;
 	this->next = next;

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void node::add_prev_element(tree_element* prev)
+void node::add_prev_element(edge* prev)
 {
 	this->prev = prev;
 }
@@ -15,7 +15,7 @@ double node::get_value()
 	return this->value;
 }
 
-void node::add_next_element(tree_element* element)
+void node::add_next_element(edge* element)
 {
 	this->next.push_back(element);
 }

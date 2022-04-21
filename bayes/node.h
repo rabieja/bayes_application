@@ -1,5 +1,6 @@
 #pragma once
 #include "tree_element.h"
+#include "edge.h"
 #include <vector>
 #include <string>
 
@@ -10,10 +11,10 @@ class node : public tree_element
 public:
 	string type;
 	double value;
-	tree_element* prev;
-	vector <tree_element* > next;
-	void add_next_element(tree_element*);
-	void add_prev_element(tree_element *);
+	edge* prev;
+	vector <edge* > next;
+	void add_next_element(edge*);
+	void add_prev_element(edge *);
 	virtual bool is_node() = 0;
 	virtual bool is_edge() = 0;
 	virtual bool is_root() = 0;
