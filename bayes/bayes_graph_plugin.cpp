@@ -32,15 +32,14 @@ bayes_graph_plugin::bayes_graph_plugin() {
 	this->tree = tree;
 }
 
-void bayes_graph_plugin::run()
-{
+void bayes_graph_plugin::generate_from_file(string file_name) {
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
 	double end_node_value, cost_of_additional_information, probability;
 	int size, id, prev_tree_element, next_tree_element;
 
 	fstream data_file;
-	data_file.open("dane.txt");
+	data_file.open(file_name);
 
 	while (!data_file.eof()) {
 		data_file >> type >> size;
@@ -50,12 +49,13 @@ void bayes_graph_plugin::run()
 		if (type == "end_node") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> end_node_value;
-			//	cout << id << " " << end_node_value << endl;
+				//	cout << id << " " << end_node_value << endl;
 				node* node_element = new end_node(id, end_node_value);
-				nodes_map.insert(pair<int, node*>( id, node_element));
+				nodes_map.insert(pair<int, node*>(id, node_element));
 				tree.push_back(node_element);
 			}continue;
-		}else if(type == "chance_node") {
+		}
+		else if (type == "chance_node") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
@@ -72,7 +72,7 @@ void bayes_graph_plugin::run()
 				data_file >> id >> root;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
 				getline(data_file, decision_node_description);
-			//	cout << id << " " << decision_node_description << " " << root << endl;
+				//	cout << id << " " << decision_node_description << " " << root << endl;
 				if (root == 'y') {
 					is_root = true;
 				}
@@ -88,8 +88,8 @@ void bayes_graph_plugin::run()
 				data_file >> id >> prev_tree_element >> next_tree_element >> probability;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
 				getline(data_file, edge_description);
-			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << probability << " " << edge_description << endl;
-				edge* edge_element = new chance_edge(id, nodes_map.find(prev_tree_element)->second, 
+				//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << probability << " " << edge_description << endl;
+				edge* edge_element = new chance_edge(id, nodes_map.find(prev_tree_element)->second,
 					nodes_map.find(next_tree_element)->second, probability, edge_description);
 
 				node* next = nodes_map.find(next_tree_element)->second;
@@ -107,7 +107,7 @@ void bayes_graph_plugin::run()
 				data_file >> id >> prev_tree_element >> next_tree_element >> cost_of_additional_information;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
 				getline(data_file, edge_description);
-			//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
+				//	cout << id << " " << prev_tree_element << " " << next_tree_element << " " << edge_description << endl;
 				edge* edge_element = new decision_edge(id, nodes_map.find(prev_tree_element)->second,
 					nodes_map.find(next_tree_element)->second, cost_of_additional_information, edge_description);
 
@@ -123,18 +123,22 @@ void bayes_graph_plugin::run()
 		}
 	}
 	data_file.close();
+}
 
+void bayes_graph_plugin::generate_graph() {
 	if (engine.validation(tree, edges_map, nodes_map)) {
 		engine.find_decision(tree);
-
-		for (int i = 1; i <= 24; i++) {
-				//	cout << nodes_map.find(i)->second->id << " " << nodes_map.find(i)->second->value << endl;
-		}
 
 		string file_name = "dane";
 
 		engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
 		engine.create_png_graph(file_name);
 	}
+}
+void bayes_graph_plugin::run()
+{
+
+	generate_from_file("dane.txt");
+	generate_graph();
 }
 
