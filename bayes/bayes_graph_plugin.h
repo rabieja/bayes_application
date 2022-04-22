@@ -21,6 +21,11 @@ public:
 	void generate_chance_node();
 	void generate_end_node();
 	void run();
+	void add_chance_edge(node* prev, node* next, string description);
+	void add_decision_edge(node* prev, node* next, string description);
+	void add_edge(int prev_id, int next_id, vector<node*>& helper_nodes);
+	bool erase_node(map<int, node*>& nodes, vector<node*>& helper_nodes, int id);
+	void show_all_nodes(map<int, node*>& nodes);
 };
 
 #endif
