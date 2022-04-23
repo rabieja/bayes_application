@@ -265,131 +265,164 @@ void bayes_graph_plugin::generate_end_node() {
 	tree.push_back(node_element);
 }
 
+void bayes_graph_plugin::generate_tree_from_file() {
+	string data_file;
+	cout << "Podaj œcie¿kê do pliku z którego chcesz wygenerowaæ drzewo..." << endl;
+	cin >> data_file;
+	while (!generate_from_file(data_file)) {
+		cout << "Podany plik nie istnieje. Podaj ponownie œcie¿kê do pliku" << endl;
+		cin >> data_file;
+	}
+	generate_graph();
+}
 
+void bayes_graph_plugin::manual_generate_root() {
+	cout << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
+	generate_decision_node(true);
+}
+void bayes_graph_plugin::manual_generate_decision_nodes() {
+	string n_decision = "";
+
+	while (n_decision != "nie") {
+		cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
+		cin >> n_decision;
+		if (n_decision == "tak") {
+			generate_decision_node(false);
+		}
+	}
+}
+void bayes_graph_plugin::manual_generate_chance_nodes() {
+	string n_chance = "";
+	cout << "Dodaj wêz³y losowe..." << endl;
+
+	while (n_chance != "tak" && n_chance != "nie") {
+		cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
+		cin >> n_chance;
+		if (n_chance == "tak") {
+			generate_chance_node();
+		}
+	}
+	if (n_chance != "nie") {
+		n_chance = "";
+	}
+
+	while (n_chance != "nie") {
+		cout << "Czy chcesz dodaæ kolejny wêze³ losowy?" << endl;
+		cin >> n_chance;
+		if (n_chance == "tak") {
+			generate_chance_node();
+		}
+	}
+
+}
+
+void bayes_graph_plugin::manual_generate_end_nodes() {
+	string n_end = "";
+	cout << "Dodaj wêz³y koñcowe..." << endl;
+
+	while (n_end != "tak" && n_end != "nie") {
+		cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
+		cin >> n_end;
+		if (n_end == "tak") {
+			generate_end_node();
+		}
+	}
+	if (n_end != "nie") {
+		n_end = "";
+	}
+	while (n_end != "nie") {
+		cout << "Czy chcesz dodaæ kolejny wêze³ koñcowy?" << endl;
+		cin >> n_end;
+		if (n_end == "tak") {
+			generate_end_node();
+		}
+	}
+}
+
+void bayes_graph_plugin::manuale_generate_edges() {
+
+	string e_change = "", e_decision = "", edge_answer = "";
+
+	map <int, node*> helper_nodes_map;
+	vector <node*> helper_nodes;
+	helper_nodes_map = nodes_map;
+	int next_id;
+
+	erase_node(helper_nodes_map, helper_nodes, 1);
+
+	while (!helper_nodes.empty()) {
+
+		cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "   nazwa: " << helper_nodes[0]->description << endl;
+		show_all_nodes(helper_nodes_map);
+		while (next_id = get_number()) {
+			if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
+				break;
+			}
+		}
+		add_edge(helper_nodes[0]->id, next_id, helper_nodes);
+
+		while (edge_answer != "nie" && !helper_nodes_map.empty()) {
+			while (edge_answer != "nie" && edge_answer != "tak") {
+				cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
+				cin >> edge_answer;
+			}
+			if (edge_answer == "nie") {
+				break;
+			}
+			cout << "Dostêpne wêz³y:" << endl;
+			show_all_nodes(helper_nodes_map);
+			cout << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
+			while (next_id = get_number()) {
+				if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
+					break;
+				}
+			}
+			add_edge(helper_nodes[0]->id, next_id, helper_nodes);
+			cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
+			cin >> edge_answer;
+		}
+		helper_nodes.erase(helper_nodes.begin());
+	}
+}
+void bayes_graph_plugin::manual_generation_tree() {
+
+	string n_end = "",  e_change = "", e_decision = "";
+	cout << "Zosta³ uruchomiony tryb rêcznego generowania danych." << endl;
+	cout << "Dodaj wêz³y decyzyjne..." << endl;
+
+	manual_generate_root();
+
+	manual_generate_decision_nodes();
+	manual_generate_chance_nodes();
+	manual_generate_end_nodes();
+
+	cout << "Po³¹cz ze sob¹ wêz³y..." << endl;
+	cout << endl;
+	cout << "Aby wybraæ wêze³ z którym po³¹czysz podany przez aplikacje wêze³ wpisz jego id." << endl;
+	cout << "Na pocz¹tek po³¹cz korzeñ drzewa z kolejnymi wêz³ami" << endl;
+	cout << endl;
+	cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
+	cout << endl;
+
+	manuale_generate_edges();
+
+	generate_graph();
+}
 void bayes_graph_plugin::run()
 {
 	setlocale(LC_CTYPE, "Polish");
-	string answer= "", data_file;
+	string answer= "";
 	cout << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;
+	cout << endl;
+
 	while (answer != "tak" && answer != "nie") {
 		cout << "Czy chcesz wygenerowaæ drzewo decyzyjne z danych zapisanych w pliku? (tak/nie)" << endl;
 		cin >> answer;
 		if (answer == "tak") {
-			cout << "Podaj œcie¿kê do pliku z którego chcesz wygenerowaæ drzewo..." << endl;
-			cin >> data_file;
-			while (!generate_from_file(data_file)) {
-				cout << "Podany plik nie istnieje. Podaj ponownie œcie¿kê do pliku" << endl;
-				cin >> data_file;
-			}
-			generate_graph();
+			generate_tree_from_file();
 		}
 		else if (answer == "nie") {
-			string n_end = "", n_chance = "", n_decision = "", e_change = "", e_decision = "";
-			cout << "Zosta³ uruchomiony tryb rêcznego generowania danych." << endl;
-			cout << "Dodaj wêz³y decyzyjne..." << endl;
-			cout << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
-			generate_decision_node(true);
-
-			while (n_decision != "nie") {
-				cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
-				cin >> n_decision;
-				if (n_decision == "tak") {
-					generate_decision_node(false);
-				}
-			}
-
-			cout << "Dodaj wêz³y losowe..." << endl;
-	
-			while (n_chance != "tak" && n_chance != "nie") {
-				cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
-				cin >> n_chance;
-				if (n_chance == "tak") {
-					generate_chance_node();
-				}
-			}
-			if (n_chance != "nie") {
-				n_chance = "";
-			}
-
-			while (n_chance != "nie") {
-				cout << "Czy chcesz dodaæ kolejny wêze³ losowy?" << endl;
-				cin >> n_chance;
-				if (n_chance == "tak") {
-					generate_chance_node();
-				}
-			}
-
-			cout << "Dodaj wêz³y koñcowe..." << endl;
-
-			while (n_end != "tak" && n_end != "nie") {
-				cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
-				cin >> n_end;
-				if (n_end == "tak") {
-					generate_end_node();
-				}
-			}
-			if (n_end != "nie") {
-				n_end = "";
-			}
-			while (n_end != "nie") {
-				cout << "Czy chcesz dodaæ kolejny wêze³ koñcowy?" << endl;
-				cin >> n_end;
-				if (n_end == "tak") {
-					generate_end_node();
-				}
-			}
-
-	
-			map <int, node*> helper_nodes_map;
-			vector <node*> helper_nodes;
-			helper_nodes_map = nodes_map;
-
-			cout << "Po³¹cz ze sob¹ wêz³y..." << endl;
-			cout << endl;
-			cout << "Aby wybraæ wêze³ z którym po³¹czysz podany przez aplikacje wêze³ wpisz jego id." << endl;
-			cout << "Na pocz¹tek po³¹cz korzeñ drzewa z kolejnymi wêz³ami" << endl;
-			cout << endl;
-			cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
-			cout << endl;
-			erase_node(helper_nodes_map, helper_nodes, 1);
-
-			int next_id;
-			string edge_answer = "";
-			while (!helper_nodes.empty()) {
-
-				cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "   nazwa: " << helper_nodes[0]->description << endl;
-				show_all_nodes(helper_nodes_map);
-				while (next_id = get_number()) {
-					if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
-						break;
-					}
-				}
-				add_edge(helper_nodes[0]->id, next_id, helper_nodes);
-			
-				while (edge_answer != "nie" && !helper_nodes_map.empty()) {
-					while (edge_answer != "nie" && edge_answer != "tak") {
-						cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
-						cin >> edge_answer;
-					}
-					if (edge_answer == "nie") {
-						break;
-					}
-					cout << "Dostêpne wêz³y:" << endl;
-					show_all_nodes(helper_nodes_map);
-					cout << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
-					while (next_id = get_number()) {
-						if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
-							break;
-						}
-					}
-					add_edge(helper_nodes[0]->id, next_id, helper_nodes);
-					cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
-					cin >> edge_answer;
-				}
-				helper_nodes.erase(helper_nodes.begin());
-			}
-			generate_graph();
+			manual_generation_tree();
 		}
 	}
-
 }

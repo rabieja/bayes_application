@@ -21,6 +21,13 @@ public:
 	void generate_chance_node();
 	void generate_end_node();
 	double get_number();
+	void generate_tree_from_file();
+	void manual_generate_root();
+	void manual_generate_decision_nodes();
+	void manual_generate_chance_nodes();
+	void manual_generate_end_nodes();
+	void manuale_generate_edges();
+	void manual_generation_tree();
 	void run();
 	void add_chance_edge(node* prev, node* next, string description);
 	void add_decision_edge(node* prev, node* next, string description);
