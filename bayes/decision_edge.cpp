@@ -36,3 +36,8 @@ double decision_edge::get_probability()
 {
 	return 1.0;
 }
+
+double decision_edge::get_costs()
+{
+	return costs;
+}

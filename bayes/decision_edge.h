@@ -13,5 +13,6 @@ public:
 	double costs;
 	double get_value();
 	double get_probability();
+	double get_costs();
 };
 

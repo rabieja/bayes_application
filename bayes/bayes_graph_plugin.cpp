@@ -145,6 +145,22 @@ double bayes_graph_plugin::get_number() {
 	}
 	return number;
 }
+int bayes_graph_plugin::get_int_number() {
+	int number;
+	cin >> number;
+	while (1)
+	{
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits < streamsize >::max(), '\n');
+			cout << "Podane dane nie s¹ prawid³owe. Spróbuj ponownie." << endl;
+			cin >> number;
+		}
+		if (!cin.fail()) break;
+	}
+	return number;
+}
 void bayes_graph_plugin::add_chance_edge(node* prev, node* next, string description) {
 	id++;
 	double probability = 2;
@@ -209,24 +225,31 @@ void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		cout << "id:" << iter->first << "  opis: " << iter->second->description << "  typ: " << iter->second->type << endl;
 	}
+	cout << endl;
 }
 void bayes_graph_plugin::generate_graph() {
-	string answer;
+	string answer, file_name;
 	if (engine.validation(tree, edges_map, nodes_map)) {
 		engine.find_decision(tree);
 
-		string file_name = "dane";
+		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ drzewo decyzyjne" << endl;
+		cin.ignore(numeric_limits < streamsize >::max(), '\n');
+		getline(cin, file_name);
+		file_name += "/graph";
 
 		engine.create_dot_graph(file_name, tree, edges_map, nodes_map);
 		engine.create_png_graph(file_name);
 		cout << "Generowanie drzewa decyzyjnego przebieg³o pomyœlnie." << endl;
 	}
 	else {
-		cout << "Nie uda³o siê wygenerowaæ drzewa decyzyjnego. Czy chcesz zakoñczyæ pracê programu? (tak/nie)" << endl;
+		cout << "Nie uda³o siê wygenerowaæ drzewa decyzyjnego. Program zakoñczy prace." << endl;
+		exit(0);
+	/*	cout << "Nie uda³o siê wygenerowaæ drzewa decyzyjnego. Czy chcesz zakoñczyæ pracê programu? (tak/nie)" << endl;
 		cin >> answer;
 		if (answer == "tak") {
 			exit(0);
 		}
+		*/
 	}
 }
 void bayes_graph_plugin::generate_decision_node(bool root) {
@@ -354,7 +377,7 @@ void bayes_graph_plugin::manuale_generate_edges() {
 
 		cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "   nazwa: " << helper_nodes[0]->description << endl;
 		show_all_nodes(helper_nodes_map);
-		while (next_id = get_number()) {
+		while (next_id = get_int_number()) {
 			if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
 				break;
 			}
@@ -372,7 +395,7 @@ void bayes_graph_plugin::manuale_generate_edges() {
 			cout << "Dostêpne wêz³y:" << endl;
 			show_all_nodes(helper_nodes_map);
 			cout << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
-			while (next_id = get_number()) {
+			while (next_id = get_int_number()) {
 				if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
 					break;
 				}
@@ -408,6 +431,14 @@ void bayes_graph_plugin::manual_generation_tree() {
 
 	generate_graph();
 }
+
+void bayes_graph_plugin::save_graph_to_file() {
+	string data_file;
+	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
+	cin.ignore(numeric_limits < streamsize >::max(), '\n');
+	getline(cin, data_file);
+	engine.save_graph_to_file(edges_map, nodes_map, tree, data_file);
+}
 void bayes_graph_plugin::run()
 {
 	setlocale(LC_CTYPE, "Polish");
@@ -423,6 +454,7 @@ void bayes_graph_plugin::run()
 		}
 		else if (answer == "nie") {
 			manual_generation_tree();
+			save_graph_to_file();
 		}
 	}
 }

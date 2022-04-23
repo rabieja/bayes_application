@@ -36,3 +36,8 @@ double chance_edge::get_probability()
 {
 	return probability;
 }
+
+double chance_edge::get_costs()
+{
+	return 0.0;
+}

@@ -12,5 +12,6 @@ public:
 	bool is_edge();
 	double get_value();
 	double get_probability();
+	double get_costs();
 };
 

@@ -220,3 +220,70 @@ void bayes_graph_engine::find_winner_trace(tree_element* element)
 	}
 }
 
+void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map < int, node*> &nodes_map, vector <tree_element*> &tree, string file_name) {
+
+	vector <node*> end_nodes;
+	vector <node*> chance_nodes;
+	vector <node*> decision_nodes;
+	vector <edge*> chance_edges;
+	vector <edge*> decision_edges;
+
+	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
+		if (iter->second->type == "END") {
+			end_nodes.push_back(iter->second);
+		}
+		else if (iter->second->type == "CHANCE") {
+			chance_nodes.push_back(iter->second);
+		}
+		else if (iter->second->type == "DECISION") {
+			decision_nodes.push_back(iter->second);
+		}
+	}
+
+	for (map<int, edge*>::iterator iter = edges_map.begin(); iter != edges_map.end(); ++iter) {
+		if (iter->second->type == "CHANCE") {
+			chance_edges.push_back(iter->second);
+		}else if (iter->second->type == "DECISION") {
+			decision_edges.push_back(iter->second);
+		}
+	}
+
+	ofstream save(file_name + "/graph_data.txt");
+
+	save << "end_node" << " " << end_nodes.size() << endl;
+	for (int i = 0; i <= end_nodes.size() - 1; i++) {
+		save << end_nodes[i]->id << " " << end_nodes[i]->value << endl;
+	}
+
+	save << "chance_node" << " " << chance_nodes.size() << endl;
+	for (int i = 0; i <= chance_nodes.size() - 1; i++) {
+		save << chance_nodes[i]->id << endl;
+		save << chance_nodes[i]->description << endl;
+	}
+
+	save << "decision_node" << " " << decision_nodes.size() << endl;
+	for (int i = 0; i <= decision_nodes.size() - 1; i++) {
+		if (decision_nodes[i]->is_root()) {
+			save << decision_nodes[i]->id << " y" << endl;
+		}
+		else {
+			save << decision_nodes[i]->id << " n" << endl;
+		}
+		save << decision_nodes[i]->description << endl;
+	}
+
+
+	save << "edge_chance" << " " << chance_edges.size() << endl;
+	for (int i = 0; i <= chance_edges.size() - 1; i++) {
+		save << chance_edges[i]->id << " " << chance_edges[i]->prev->id << " " << chance_edges[i]->next->id << " " << chance_edges[i]->get_probability() << endl;
+		save << chance_edges[i]->description << endl;
+	}
+
+
+	save << "edge_decision" << " " << decision_edges.size() << endl;
+	for (int i = 0; i <= decision_edges.size() - 1; i++) {
+		save << decision_edges[i]->id << " " << decision_edges[i]->prev->id << " " << decision_edges[i]->next->id << " " << decision_edges[i]->get_costs() << endl;
+		save << decision_edges[i]->description << endl;
+	}
+	save.close();
+}

@@ -14,7 +14,8 @@ public:
 	bool is_root();
 	void set_value();
 	virtual double get_value() = 0;
-	virtual double get_probability() = 0;
+	virtual double get_probability() = 0; 
+	virtual double get_costs() = 0;
 	void find_winner();
 	string type;
 };
