@@ -359,19 +359,25 @@ void bayes_graph_plugin::run()
 
 				cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "   nazwa: " << helper_nodes[0]->description << endl;
 				show_all_nodes(helper_nodes_map);
-				while (cin >> next_id) {
+				while (next_id = get_number()) {
 					if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
 						break;
 					}
 				}
 				add_edge(helper_nodes[0]->id, next_id, helper_nodes);
-				cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
-				cin >> edge_answer;
-				while (edge_answer != "nie") {
+			
+				while (edge_answer != "nie" && !helper_nodes_map.empty()) {
+					while (edge_answer != "nie" && edge_answer != "tak") {
+						cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
+						cin >> edge_answer;
+					}
+					if (edge_answer == "nie") {
+						break;
+					}
 					cout << "Dostêpne wêz³y:" << endl;
 					show_all_nodes(helper_nodes_map);
 					cout << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
-					while (cin >> next_id) {
+					while (next_id = get_number()) {
 						if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
 							break;
 						}
@@ -379,7 +385,8 @@ void bayes_graph_plugin::run()
 					add_edge(helper_nodes[0]->id, next_id, helper_nodes);
 					cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
 					cin >> edge_answer;
-				}helper_nodes.erase(helper_nodes.begin());
+				}
+				helper_nodes.erase(helper_nodes.begin());
 			}
 			generate_graph();
 		}
