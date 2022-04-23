@@ -30,6 +30,7 @@ public:
 	void manuale_generate_edges();
 	void manual_generation_tree();
 	void save_graph_to_file();
+	void generate_report();
 	void run();
 	void add_chance_edge(node* prev, node* next, string description);
 	void add_decision_edge(node* prev, node* next, string description);

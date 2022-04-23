@@ -16,5 +16,7 @@ public:
 	virtual double get_value() = 0;
 	virtual void set_winner();
 	virtual void find_winner() = 0;
+	virtual tree_element * get_prev() = 0;
+	bool get_winner();
 };
 

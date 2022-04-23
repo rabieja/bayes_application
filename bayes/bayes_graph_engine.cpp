@@ -83,10 +83,12 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest wiêksza od 1.0." << endl;
 			}
 			else if (sum < 1) {
-				string answer;
+				string answer = "";
 				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
-				cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)" << endl;
-				cin >> answer;
+				while (answer != "tak" && answer != "nie") {
+					cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)" << endl;
+					cin >> answer;
+				}
 				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
 					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
 				}
@@ -248,7 +250,7 @@ void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map <
 		}
 	}
 
-	ofstream save(file_name + "/graph_data.txt");
+	ofstream save(file_name + "/tree_data.txt");
 
 	save << "end_node" << " " << end_nodes.size() << endl;
 	for (int i = 0; i <= end_nodes.size() - 1; i++) {
@@ -285,5 +287,39 @@ void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map <
 		save << decision_edges[i]->id << " " << decision_edges[i]->prev->id << " " << decision_edges[i]->next->id << " " << decision_edges[i]->get_costs() << endl;
 		save << decision_edges[i]->description << endl;
 	}
+	save.close();
+}
+
+void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, node*>& nodes_map, vector<tree_element*>& tree, string file_name)
+{
+	tree_element* root = find_root(tree);
+	vector < vector<tree_element*>> winners;
+	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
+		if (iter->second->type == "END" && iter->second->get_winner()) {
+			vector<tree_element* > winner;
+
+			tree_element* element = iter->second;
+
+			while (element->get_prev() != NULL) {
+				winner.push_back(element);
+				element = element->get_prev();
+			}winner.push_back(element);
+			winners.push_back(winner);
+		}
+	}
+	ofstream save(file_name + "/decision_report.txt");
+	for (int i = 0; i <= winners.size() - 1; i++) {
+		save << "Najlepsza mo¿liwa decyzja:" << endl;
+		for (int j = winners[i].size() - 1; j >= 0; j--) {
+			save << "id: " << winners[i][j]->id << " opis:" << winners[i][j]->description << " wartoœæ:" << winners[i][j]->get_value() << endl;
+		}save << endl;
+	}
+	save << endl;
+	save << "Wyniki poszczególnych etapów obliczeñ:" << endl;
+
+	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
+		save <<  "Wêze³ id: " << iter->second->id << " opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+	}
+
 	save.close();
 }

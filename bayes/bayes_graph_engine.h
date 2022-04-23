@@ -26,5 +26,6 @@ public:
 	void create_dot_graph(string, vector<tree_element*>, map <int, edge*>,	map <int, node*>);
 	void find_winner_trace(tree_element*);
 	void save_graph_to_file(map<int, edge*>& edges_map, map<int, node*>& nodes_map, vector<tree_element*>& tree, string file_name);
+	void generate_report(map<int, edge*>& edges_map, map<int, node*>& nodes_map, vector<tree_element*>& tree, string file_name);
 };
 

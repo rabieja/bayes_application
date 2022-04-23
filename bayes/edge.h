@@ -18,5 +18,6 @@ public:
 	virtual double get_costs() = 0;
 	void find_winner();
 	string type;
+	tree_element* get_prev() { return prev; }
 };
 

@@ -21,5 +21,6 @@ public:
 	virtual void set_value() = 0;
 	double get_value();
 	virtual void find_winner() = 0;
+	tree_element* get_prev() { return prev; }
 };
 

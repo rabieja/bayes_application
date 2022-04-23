@@ -16,8 +16,11 @@
 #include "decision_edge.h"
 #include "bayes_graph_engine.h"
 #include <locale.h>
+#include <io.h>
+
 
 using namespace std;
+
 int id = 0;
 
 bayes_graph_plugin::bayes_graph_plugin() {
@@ -433,11 +436,30 @@ void bayes_graph_plugin::manual_generation_tree() {
 }
 
 void bayes_graph_plugin::save_graph_to_file() {
-	string data_file;
+	string str;
 	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
 	cin.ignore(numeric_limits < streamsize >::max(), '\n');
-	getline(cin, data_file);
+	getline(cin, str);
+	char* data_file = const_cast<char*>(str.c_str());
+	while (_access(data_file, 00) != 0) {
+		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
+		getline(cin, str);
+		char* data_file = const_cast<char*>(str.c_str());
+	}
 	engine.save_graph_to_file(edges_map, nodes_map, tree, data_file);
+}
+
+void bayes_graph_plugin::generate_report() {
+	string str;
+	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raport z wynikami" << endl;
+	getline(cin, str);
+	char* data_file = const_cast<char*>(str.c_str());
+	while (_access(data_file, 00) != 0) {
+		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raport z wynikami" << endl;
+		getline(cin, str);
+		char* data_file = const_cast<char*>(str.c_str());
+	}
+	engine.generate_report(edges_map, nodes_map, tree, data_file);
 }
 void bayes_graph_plugin::run()
 {
@@ -451,6 +473,7 @@ void bayes_graph_plugin::run()
 		cin >> answer;
 		if (answer == "tak") {
 			generate_tree_from_file();
+			generate_report();
 		}
 		else if (answer == "nie") {
 			manual_generation_tree();
