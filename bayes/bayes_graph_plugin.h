@@ -20,6 +20,7 @@ public:
 	void generate_decision_node(bool root);
 	void generate_chance_node();
 	void generate_end_node();
+	double get_number();
 	void run();
 	void add_chance_edge(node* prev, node* next, string description);
 	void add_decision_edge(node* prev, node* next, string description);

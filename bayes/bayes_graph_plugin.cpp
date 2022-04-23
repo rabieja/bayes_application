@@ -129,7 +129,87 @@ bool bayes_graph_plugin::generate_from_file(string file_name) {
 
 	return true;
 }
+double bayes_graph_plugin::get_number() {
+	double number;
+	cin >> number;
+	while (1)
+	{
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits < streamsize >::max(), '\n');
+			cout << "Podane dane nie s¹ prawid³owe. Spróbuj ponownie." << endl;
+			cin >> number;
+		}
+		if (!cin.fail()) break;
+	}
+	return number;
+}
+void bayes_graph_plugin::add_chance_edge(node* prev, node* next, string description) {
+	id++;
+	double probability = 2;
+	while (probability > 1 || probability < 0) {
+		cout << "Podaj prawdopodobieñstwo (wartoœæ z przedzia³u <0, 1>)..." << endl;
+		probability = get_number();
+	}
+	edge* edge_element = new chance_edge(id, prev, next, probability, description);
 
+	next->add_prev_element(edge_element);
+	prev->add_next_element(edge_element);
+	edges_map.insert(pair<int, edge*>(id, edge_element));
+	tree.push_back(edge_element);
+}
+
+void bayes_graph_plugin::add_decision_edge(node* prev, node* next, string description) {
+	id++;
+	double cost;
+	cout << "Podaj koszty uzyskania dodatkowych informacji, jeœli nie istniej¹ podaj \"0\"..." << endl;
+	cost = get_number();
+	edge* edge_element = new decision_edge(id, prev, next, cost, description);
+
+	next->add_prev_element(edge_element);
+	prev->add_next_element(edge_element);
+	edges_map.insert(pair<int, edge*>(id, edge_element));
+	tree.push_back(edge_element);
+}
+
+void bayes_graph_plugin::add_edge(int prev_id, int next_id, vector <node*>& helper_nodes) {
+	string description;
+	cout << "Podaj opis krawêdzi..." << endl;
+	cin.ignore(numeric_limits < streamsize >::max(), '\n');
+	getline(cin, description);
+
+	node* prev = nodes_map.find(prev_id)->second;
+	node* next = nodes_map.find(next_id)->second;
+
+	if (prev->type == "DECISION") {
+		add_decision_edge(prev, next, description);
+	}
+	else if (prev->type == "CHANCE") {
+		add_chance_edge(prev, next, description);
+	}
+}
+bool bayes_graph_plugin::erase_node(map <int, node*>& nodes, vector <node*>& helper_nodes, int id) {
+	if (nodes.count(id) == 0) {
+		cout << "Podany wêze³ nie istnieje lub posiada ju¿ poprzednika. Spróbuj ponownie." << endl;
+		return false;
+	}
+	else {
+		if (nodes.find(id)->second->type != "END") {
+			helper_nodes.push_back(nodes.find(id)->second);
+		}
+		nodes.erase(id);
+		return true;
+	}
+}
+void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
+	cout << endl;
+	cout << "LISTA DOSTÊPNYCH WIERZCHO£KÓW" << endl;
+	cout << endl;
+	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+		cout << "id:" << iter->first << "  opis: " << iter->second->description << "  typ: " << iter->second->type << endl;
+	}
+}
 void bayes_graph_plugin::generate_graph() {
 	string answer;
 	if (engine.validation(tree, edges_map, nodes_map)) {
@@ -178,12 +258,14 @@ void bayes_graph_plugin::generate_end_node() {
 	double value;
 	id++;
 	cout << "Podaj wartoœæ wêz³a" << endl;
-	cin >> value;
+	value = get_number();
 
 	node* node_element = new end_node(id, value);
 	nodes_map.insert(pair<int, node*>(id, node_element));
 	tree.push_back(node_element);
 }
+
+
 void bayes_graph_plugin::run()
 {
 	setlocale(LC_CTYPE, "Polish");
@@ -208,46 +290,74 @@ void bayes_graph_plugin::run()
 			cout << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
 			generate_decision_node(true);
 
-			cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
-			cin >> n_decision;
 			while (n_decision != "nie") {
-				generate_decision_node(false);
 				cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
 				cin >> n_decision;
+				if (n_decision == "tak") {
+					generate_decision_node(false);
+				}
 			}
 
 			cout << "Dodaj wêz³y losowe..." << endl;
-			cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
-			cin >> n_chance;
+	
+			while (n_chance != "tak" && n_chance != "nie") {
+				cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
+				cin >> n_chance;
+				if (n_chance == "tak") {
+					generate_chance_node();
+				}
+			}
+			if (n_chance != "nie") {
+				n_chance = "";
+			}
+
 			while (n_chance != "nie") {
-				generate_chance_node();
 				cout << "Czy chcesz dodaæ kolejny wêze³ losowy?" << endl;
 				cin >> n_chance;
+				if (n_chance == "tak") {
+					generate_chance_node();
+				}
 			}
 
 			cout << "Dodaj wêz³y koñcowe..." << endl;
-			cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
-			cin >> n_end;
+
+			while (n_end != "tak" && n_end != "nie") {
+				cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
+				cin >> n_end;
+				if (n_end == "tak") {
+					generate_end_node();
+				}
+			}
+			if (n_end != "nie") {
+				n_end = "";
+			}
 			while (n_end != "nie") {
-				generate_end_node();
 				cout << "Czy chcesz dodaæ kolejny wêze³ koñcowy?" << endl;
 				cin >> n_end;
+				if (n_end == "tak") {
+					generate_end_node();
+				}
 			}
+
+	
 			map <int, node*> helper_nodes_map;
 			vector <node*> helper_nodes;
 			helper_nodes_map = nodes_map;
 
 			cout << "Po³¹cz ze sob¹ wêz³y..." << endl;
+			cout << endl;
 			cout << "Aby wybraæ wêze³ z którym po³¹czysz podany przez aplikacje wêze³ wpisz jego id." << endl;
 			cout << "Na pocz¹tek po³¹cz korzeñ drzewa z kolejnymi wêz³ami" << endl;
+			cout << endl;
 			cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
+			cout << endl;
 			erase_node(helper_nodes_map, helper_nodes, 1);
 
 			int next_id;
 			string edge_answer = "";
 			while (!helper_nodes.empty()) {
 
-				cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "nazwa: " << helper_nodes[0]->description << endl;
+				cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << "   nazwa: " << helper_nodes[0]->description << endl;
 				show_all_nodes(helper_nodes_map);
 				while (cin >> next_id) {
 					if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
@@ -275,70 +385,4 @@ void bayes_graph_plugin::run()
 		}
 	}
 
-}
-
-void bayes_graph_plugin::add_chance_edge(node * prev, node * next, string description) {
-	id++;
-	double probability = 2;
-	while (probability > 1 || probability < 0) {
-		cout << "Podaj prawdopodobieñstwo (wartoœæ z przedzia³u <0, 1>)..." << endl;
-		cin >> probability;
-	}
-	edge* edge_element = new chance_edge(id, prev, next, probability, description);
-
-	next->add_prev_element(edge_element);
-	prev->add_next_element(edge_element);
-	edges_map.insert(pair<int, edge*>(id, edge_element));
-	tree.push_back(edge_element);
-}
-
-void bayes_graph_plugin::add_decision_edge(node* prev, node* next, string description) {
-	id++;
-	double cost;
-	cout << "Podaj koszty uzyskania dodatkowych informacji, jeœli nie istniej¹ podaj \"0\"..." << endl;
-	cin >> cost;
-	edge* edge_element = new decision_edge(id, prev, next, cost, description);
-
-	next->add_prev_element(edge_element);
-	prev->add_next_element(edge_element);
-	edges_map.insert(pair<int, edge*>(id, edge_element));
-	tree.push_back(edge_element);
-}
-
-void bayes_graph_plugin::add_edge(int prev_id, int next_id, vector <node*> &helper_nodes) {
-	string description;
-	cout << "Podaj opis krawêdzi..." << endl;
-	cin.ignore(numeric_limits < streamsize >::max(), '\n');
-	getline(cin, description);
-
-	node* prev = nodes_map.find(prev_id)->second;
-	node* next = nodes_map.find(next_id)->second;
-/*	if (next->type != "END") {
-		helper_nodes.push_back(next);
-	}
-	*/
-	if (prev->type == "DECISION") {
-		add_decision_edge(prev, next, description);
-	}
-	else if (prev->type == "CHANCE") {
-		add_chance_edge(prev, next, description);
-	}
-}
-bool bayes_graph_plugin::erase_node(map <int, node*>& nodes, vector <node*>& helper_nodes, int id) {
-	if (nodes.count(id)== 0) {
-		cout << "Podany wêze³ nie istnieje lub posiada ju¿ poprzednika. Spróbuj ponownie." << endl;
-		return false;
-	}
-	else{
-		if (nodes.find(id)->second->type != "END") {
-			helper_nodes.push_back(nodes.find(id)->second);
-		}
-		nodes.erase(id);
-		return true;
-	}
-}
-void bayes_graph_plugin::show_all_nodes(map <int, node*> &nodes) {
-	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
-		cout << "id:" << iter->first << "  opis: " << iter->second->description << "  typ: " << iter->second->type << endl;
-	}
 }
