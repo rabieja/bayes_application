@@ -34,7 +34,7 @@ bool bayes_graph_engine::validation(vector<tree_element*>& tree, map<int, edge*>
 
 bool bayes_graph_engine::validate_nodes(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges)
 {
-	return validate_prev_element(nodes) && validate_next_elements(nodes) && validate_sum_probability(tree, nodes, edges);
+	return validate_prev_element(nodes) &&  validate_sum_probability(tree, nodes, edges) && validate_next_elements(nodes);
 }
 
 bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
@@ -64,21 +64,36 @@ bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
 	}
 	return result;
 }
+void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges, node* node_prev, double probability) {
 
+	int id = search_next_id(tree);
+
+	node* node_element = new end_node(id, 0);
+	nodes.insert(pair<int, node*>(id, node_element));
+	tree.push_back(node_element);
+	id++;
+	edge* edge_element = new chance_edge(id, node_prev, node_element, probability, "");
+	edges.insert(pair<int, edge*>(id, edge_element));
+	tree.push_back(edge_element);
+
+	node_element->add_prev_element(edge_element);
+	node_prev->add_next_element(edge_element);
+}
 bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges) {
 
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "CHANCE") {
 
 			double sum = 0;
-			for (int i = 0; i <= iter->second->next.size() - 1; i++) {
-				if (iter->second->next[i]->type != "CHANCE") {
-					cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << iter->second->next[i]->description << " \" jest z³ego typu. Wymagany typ to ga³¹Ÿ losowa." << endl;
-					return false;
+			if (!iter->second->next.empty()) {
+				for (int i = 0; i <= iter->second->next.size() - 1; i++) {
+					if (iter->second->next[i]->type != "CHANCE") {
+						cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << iter->second->next[i]->description << " \" jest z³ego typu. Wymagany typ to ga³¹Ÿ losowa." << endl;
+						return false;
+					}
+					else sum += iter->second->next[i]->get_probability();
 				}
-				else sum += iter->second->next[i]->get_probability();
 			}
-
 			if (sum > 1) {
 				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest wiêksza od 1.0." << endl;
 			}
@@ -105,22 +120,7 @@ int bayes_graph_engine::search_next_id(vector<tree_element*>& tree) {
 		id = max(id, tree[i]->id);
 	}return id++;
 }
-void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges, node * node_prev, double probability) {
 
-	int id = search_next_id(tree);
-
-	node* node_element = new end_node(id, 0);
-	nodes.insert(pair<int, node*>(id, node_element));
-	tree.push_back(node_element);
-
-	id++;
-	edge* edge_element = new chance_edge(id, node_prev, node_element, probability, "");
-	edges.insert(pair<int, edge*>(id, edge_element));
-	tree.push_back(edge_element);
-
-	node_element->add_prev_element(edge_element);
-	node_prev->add_next_element(edge_element);
-}
 bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 {
 	bool result = true;
@@ -159,14 +159,15 @@ tree_element* bayes_graph_engine::find_root(vector<tree_element*> tree)
 
 int bayes_graph_engine::create_png_graph(string file_name)
 {
+
 	GVC_t* gvc;
 	Agraph_t* g;
 	FILE* fp;
 	gvc = gvContext();
-	fp = fopen((file_name + ".dot").c_str(), "r");
+	fp = fopen((file_name + "/tree.dot").c_str(), "r");
 	g = agread(fp, 0);
 	gvLayout(gvc, g, "dot");
-	gvRenderFilename(gvc, g, "png", (file_name + ".png").c_str());
+	gvRenderFilename(gvc, g, "png", (file_name + "/tree.png").c_str());
 
 	gvFreeLayout(gvc, g);
 	agclose(g);
@@ -176,7 +177,7 @@ int bayes_graph_engine::create_png_graph(string file_name)
 void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*> tree, map<int, edge*> edges, map<int, node*> nodes)
 {
 	// dot -Tpng dane.dot -o dane.png
-	ofstream save(file_name + ".dot");
+	ofstream save(file_name + "/tree.dot");
 	save << "strict graph{" << endl;
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
