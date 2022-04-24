@@ -327,13 +327,10 @@ void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, no
 	save << "Wyniki poszczególnych etapów obliczeñ:" << endl;
 
 	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
-		if (iter->second->is_edge()) {
-			save << "Krawêdz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
-		}
-		else {
-			save << "Wêze³ (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
-		}
+		save << "Wêze³ (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+	}save << endl;
+	for (map<int, edge*>::iterator iter = edges_map.begin(); iter != edges_map.end(); ++iter) {
+			save << "Krawêdz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->get_value() << endl;
 	}
-
 	save.close();
 }
