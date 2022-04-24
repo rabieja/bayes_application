@@ -14,6 +14,8 @@ chance_node::chance_node(int id, string description)
 	this->description = description;
 	this->next = next;
 	this->type = "CHANCE";
+	this->helper = false;
+
 }
 
 bool chance_node::is_node()
@@ -72,4 +74,9 @@ void chance_node::find_winner()
 
 	return;
 
+}
+
+void chance_node::set_helper(bool helper_value)
+{
+	this->helper = helper_value;
 }

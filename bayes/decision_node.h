@@ -16,5 +16,7 @@ public:
 	bool is_root();
 	void set_value();
 	void find_winner();
+	void set_helper(bool helper_value);
+
 };
 

@@ -69,10 +69,12 @@ void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<i
 	int id = search_next_id(tree);
 
 	node* node_element = new end_node(id, 0);
+	node_element->set_helper(true);
 	nodes.insert(pair<int, node*>(id, node_element));
 	tree.push_back(node_element);
 	id++;
 	edge* edge_element = new chance_edge(id, node_prev, node_element, probability, "");
+	edge_element->set_helper(true);
 	edges.insert(pair<int, edge*>(id, edge_element));
 	tree.push_back(edge_element);
 
@@ -182,10 +184,10 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "DECISION") {
-			save << iter->second->id << "[shape=square  label=\" " << iter->second->value << "\" ] " << endl;
+			save << iter->second->id << "[shape=square label = \"" << iter->second->description << "\" xlabel = \" " << iter->second->value << "\" ] " << endl;
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->id << "[shape=circle label=\" " << iter->second->value << "\"] " << endl;
+			save << iter->second->id << "[shape=circle label = \"" << iter->second->description << "\" xlabel=\" " << iter->second->value << "\"] " << endl;
 		}
 		else {
 			save << iter->second->id << "[shape=none label=\" " << iter->second->value << "\"] " << endl;
@@ -193,7 +195,9 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 		if (iter->second->winner) {
 			save << "[color = red];" << endl;
 		}
-		else save << "[color = black];" << endl;
+		else if (iter->second->helper) {
+			save << "[color = grey];" << endl;
+		}else save << "[color = black];" << endl;
 	}
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
@@ -208,7 +212,9 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 		if (iter->second->winner) {
 			save << "[color = red];" << endl;
 		}
-		else save << "[color = black];" << endl;
+		else if (iter->second->helper) {
+			save << "[color = grey];" << endl;
+		}else save << "[color = black];" << endl;
 	}
 	save << "}";
 

@@ -18,6 +18,8 @@ decision_node::decision_node(int id, bool root, string description)
 	this->description = description;
 	this->next = next;
 	this->type = "DECISION";
+	this->helper = false;
+
 }
 
 bool decision_node::is_node()
@@ -78,4 +80,9 @@ void decision_node::find_winner() {
 	}
 
 	return;
+}
+
+void decision_node::set_helper(bool helper_value)
+{
+	this->helper = helper_value;
 }

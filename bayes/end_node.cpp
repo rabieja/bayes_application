@@ -7,6 +7,7 @@ end_node::end_node(int id, double value)
 	this->next = next;
 	this->type = "END";
 	this->description = to_string(value);
+	this->helper = false;
 }
 
 bool end_node::is_node()
@@ -27,4 +28,9 @@ bool end_node::is_root()
 void end_node::find_winner()
 {
 	return;
+}
+
+void end_node::set_helper(bool helper_value)
+{
+	this->helper = helper_value;
 }

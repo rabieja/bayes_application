@@ -10,6 +10,8 @@ decision_edge::decision_edge(int id, tree_element* prev, tree_element* next, dou
 	this->type = "DECISION";
 	this->winner = false;
 	this->costs = cost_of_additional_information;
+	this->helper = false;
+
 }
 
 bool decision_edge::is_node()
@@ -40,4 +42,9 @@ double decision_edge::get_probability()
 double decision_edge::get_costs()
 {
 	return costs;
+}
+
+void decision_edge::set_helper(bool helper_value)
+{
+	this->helper = helper_value;
 }

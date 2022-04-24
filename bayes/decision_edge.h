@@ -14,5 +14,7 @@ public:
 	double get_value();
 	double get_probability();
 	double get_costs();
+	void set_helper(bool helper_value);
+
 };
 

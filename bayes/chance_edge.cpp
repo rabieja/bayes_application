@@ -10,6 +10,7 @@ chance_edge::chance_edge(int id, tree_element* prev, tree_element* next, double 
 	this->probability = probability;
 	this->type = "CHANCE";
 	this->winner = false;
+	this->helper = false;
 }
 
 bool chance_edge::is_node()
@@ -40,4 +41,9 @@ double chance_edge::get_probability()
 double chance_edge::get_costs()
 {
 	return 0.0;
+}
+
+void chance_edge::set_helper(bool helper_value)
+{
+	this->helper = helper_value;
 }
