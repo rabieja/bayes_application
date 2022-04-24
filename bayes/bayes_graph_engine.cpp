@@ -310,16 +310,23 @@ void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, no
 	}
 	ofstream save(file_name + "/decision_report.txt");
 	for (int i = 0; i <= winners.size() - 1; i++) {
+		int number = 1;
 		save << "Najlepsza mo¿liwa decyzja:" << endl;
 		for (int j = winners[i].size() - 1; j >= 0; j--) {
-			save << "id: " << winners[i][j]->id << " opis:" << winners[i][j]->description << " wartoœæ:" << winners[i][j]->get_value() << endl;
+			save << number << ". (id: " << winners[i][j]->id << ") opis: " << winners[i][j]->description << " wartoœæ:" << winners[i][j]->get_value() << endl;
+			number++;
 		}save << endl;
 	}
 	save << endl;
 	save << "Wyniki poszczególnych etapów obliczeñ:" << endl;
 
 	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
-		save <<  "Wêze³ id: " << iter->second->id << " opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+		if (iter->second->is_edge()) {
+			save << "Krawêdz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+		}
+		else {
+			save << "Wêze³ (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+		}
 	}
 
 	save.close();
