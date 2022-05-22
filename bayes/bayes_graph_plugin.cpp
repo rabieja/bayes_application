@@ -242,6 +242,9 @@ void bayes_graph_plugin::generate_graph() {
 		getline(cin, str);
 		char* data_file = const_cast<char*>(str.c_str());
 		while (_access(data_file, 00) != 0) {
+			if (_access(data_file, 00) == 0) {
+				break;
+			}
 			cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ drzewo decyzyjne" << endl;
 			getline(cin, str);
 			char* data_file = const_cast<char*>(str.c_str());
@@ -464,7 +467,6 @@ void bayes_graph_plugin::generate_report() {
 }
 void bayes_graph_plugin::run()
 {
-	setlocale(LC_CTYPE, "Polish");
 	string answer= "";
 	cout << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;
 	cout << endl;

@@ -1,4 +1,4 @@
-#include "bayes_graph_engine.h"
+ï»¿#include "bayes_graph_engine.h"
 #include "node.h"
 #include "edge.h"
 #include "end_node.h"
@@ -9,6 +9,8 @@
 #include <fstream>
 #include "chance_edge.h"
 #include <locale.h>
+#include <locale>
+#include <codecvt>
 
 using namespace std;
 
@@ -24,7 +26,7 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 
 bool bayes_graph_engine::validation(vector<tree_element*>& tree, map<int, edge*>& edges, map<int, node*>& nodes)
 {
-	setlocale(LC_CTYPE, "Polish");
+//	setlocale(LC_CTYPE, "Polish");
 	if (!validate_nodes(tree, nodes, edges) || !validate_edges(edges)) {
 		return false;
 	}
@@ -44,7 +46,7 @@ bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		description = iter->second->description;
 		if (iter->second->type != "END" && iter->second->next.empty()) {
-			cout << "Wprowadzone dane sa nieprawid³owe, wêze³ \" " << description << " \" nie posiada nastêpników." << endl;
+			cout << "Wprowadzone dane sa nieprawidÅ‚owe, wÄ™zeÅ‚ \" " << description << " \" nie posiada nastÄ™pnikÃ³w." << endl;
 			result = false;
 		}
 	}
@@ -58,7 +60,7 @@ bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		description = iter->second->description;
 		if (!iter->second->is_root() && iter->second->prev == NULL) {
-			cout << "Wprowadzone dane sa nieprawid³owe, wêze³ \" " << description << " \" nie posiada poprzednika." << endl;
+			cout << "Wprowadzone dane sa nieprawidÅ‚owe, wÄ™zeÅ‚ \" " << description << " \" nie posiada poprzednika." << endl;
 			result = false;
 		}
 	}
@@ -90,20 +92,20 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 			if (!iter->second->next.empty()) {
 				for (int i = 0; i <= iter->second->next.size() - 1; i++) {
 					if (iter->second->next[i]->type != "CHANCE") {
-						cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << iter->second->next[i]->description << " \" jest z³ego typu. Wymagany typ to ga³¹Ÿ losowa." << endl;
+						cout << "Wprowadzone dane sa nieprawidÅ‚owe, gaÅ‚Ä…Åº \" " << iter->second->next[i]->description << " \" jest zÅ‚ego typu. Wymagany typ to gaÅ‚Ä…Åº losowa." << endl;
 						return false;
 					}
 					else sum += iter->second->next[i]->get_probability();
 				}
 			}
 			if (sum > 1) {
-				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest wiêksza od 1.0." << endl;
+				cout << "Wprowadzone dane sa nieprawidÅ‚owe, suma prawdopodobieÅ„stw w wÄ™Åºle \" " << iter->second->description << " \" jest wiÄ™ksza od 1.0." << endl;
 			}
 			else if (sum < 1) {
 				string answer = "";
-				cout << "Wprowadzone dane sa nieprawid³owe, suma prawdopodobieñstw w wêŸle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
+				cout << "Wprowadzone dane sa nieprawidÅ‚owe, suma prawdopodobieÅ„stw w wÄ™Åºle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
 				while (answer != "tak" && answer != "nie") {
-					cout << "Czy chcesz zredukowaæ b³¹d dodaj¹c wêze³ pomocniczy, którego wartoœæ monetarna jest równa 0? (tak/nie)" << endl;
+					cout << "Czy chcesz zredukowaÄ‡ bÅ‚Ä…d dodajÄ…c wÄ™zeÅ‚ pomocniczy, ktÃ³rego wartoÅ›Ä‡ monetarna jest rÃ³wna 0? (tak/nie)" << endl;
 					cin >> answer;
 				}
 				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
@@ -130,11 +132,11 @@ bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		description = iter->second->description;
 		if (iter->second->prev == NULL) {
-			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada poprzednika." << endl;
+			cout << "Wprowadzone dane sa nieprawidÅ‚owe, gaÅ‚Ä…Åº \" " << description << " \" nie posiada poprzednika." << endl;
 			result = false;
 		}
 		if (iter->second->next == NULL) {
-			cout << "Wprowadzone dane sa nieprawid³owe, ga³¹Ÿ \" " << description << " \" nie posiada nastêpnika." << endl;
+			cout << "Wprowadzone dane sa nieprawidÅ‚owe, gaÅ‚Ä…Åº \" " << description << " \" nie posiada nastÄ™pnika." << endl;
 			result = false;
 		}
 	}
@@ -161,7 +163,6 @@ tree_element* bayes_graph_engine::find_root(vector<tree_element*> tree)
 
 int bayes_graph_engine::create_png_graph(string file_name)
 {
-
 	GVC_t* gvc;
 	Agraph_t* g;
 	FILE* fp;
@@ -179,15 +180,32 @@ int bayes_graph_engine::create_png_graph(string file_name)
 void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*> tree, map<int, edge*> edges, map<int, node*> nodes)
 {
 	// dot -Tpng dane.dot -o dane.png
-	ofstream save(file_name + "/tree.dot");
+	locale lc(std::locale(), new std::codecvt_utf8<wchar_t>);
+	wofstream save(file_name + "/tree.dot");
+	save.imbue(std::locale(".utf8"));
+
 	save << "strict graph{" << endl;
+//	save << "charset = \"Latin1\";" << endl;
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+
 		if (iter->second->type == "DECISION") {
-			save << iter->second->id << "[shape=square label = \"" << iter->second->description << "\" xlabel = \" " << iter->second->value << "\" ] " << endl;
+			string s = iter->second->description;
+			std::locale loc(".1250");
+			auto& cctv = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+			std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>> converter(&cctv);
+			std::wstring wide = converter.from_bytes(s);
+
+			save << iter->second->id << "[shape=square label = \"" << wide << "\" xlabel = \" " << iter->second->value << "\" ] " << endl;
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->id << "[shape=circle label = \"" << iter->second->description << "\" xlabel=\" " << iter->second->value << "\"] " << endl;
+			string s = iter->second->description;
+			std::locale loc(".1250");
+			auto& cctv = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+			std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>> converter(&cctv);
+			std::wstring wide = converter.from_bytes(s);
+
+			save << iter->second->id << "[shape=circle label = \"" << wide << "\" xlabel=\" " << iter->second->value << "\"] " << endl;
 		}
 		else {
 			save << iter->second->id << "[shape=none label=\" " << iter->second->value << "\"] " << endl;
@@ -201,13 +219,20 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 	}
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
+
+		string s = iter->second->description;
+		std::locale loc(".1250");
+		auto& cctv = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+		std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>> converter(&cctv);
+		std::wstring wide = converter.from_bytes(s);
+
 		if (iter->second->type == "DECISION") {
-			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << "\"] ";
+				save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << "\"] ";
 
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << iter->second->description << " " <<
-				iter->second->get_probability() << "\"] ";
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << " " <<
+					iter->second->get_probability() << "\"] ";
 		}
 		if (iter->second->winner) {
 			save << "[color = red];" << endl;
@@ -257,7 +282,11 @@ void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map <
 		}
 	}
 
+
+
 	ofstream save(file_name + "/tree_data.txt");
+
+
 
 	save << "end_node" << " " << end_nodes.size() << endl;
 	for (int i = 0; i <= end_nodes.size() - 1; i++) {
@@ -295,6 +324,7 @@ void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map <
 		save << decision_edges[i]->description << endl;
 	}
 	save.close();
+
 }
 
 void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, node*>& nodes_map, vector<tree_element*>& tree, string file_name)
@@ -317,20 +347,20 @@ void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, no
 	ofstream save(file_name + "/decision_report.txt");
 	for (int i = 0; i <= winners.size() - 1; i++) {
 		int number = 1;
-		save << "Najlepsza mo¿liwa decyzja:" << endl;
+		save << "Najlepsza moÅ¼liwa decyzja:" << endl;
 		for (int j = winners[i].size() - 1; j >= 0; j--) {
-			save << number << ". (id: " << winners[i][j]->id << ") opis: " << winners[i][j]->description << " wartoœæ:" << winners[i][j]->get_value() << endl;
+			save << number << ". (id: " << winners[i][j]->id << ") opis: " << winners[i][j]->description << " wartoÅ›Ä‡:" << winners[i][j]->get_value() << endl;
 			number++;
 		}save << endl;
 	}
 	save << endl;
-	save << "Wyniki poszczególnych etapów obliczeñ:" << endl;
+	save << "Wyniki poszczegÃ³lnych etapÃ³w obliczeÅ„:" << endl;
 
 	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
-		save << "Wêze³ (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->value << endl;
+		save << "WÄ™zeÅ‚ (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoÅ›Ä‡: " << iter->second->value << endl;
 	}save << endl;
 	for (map<int, edge*>::iterator iter = edges_map.begin(); iter != edges_map.end(); ++iter) {
-			save << "Krawêdz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoœæ: " << iter->second->get_value() << endl;
+			save << "KrawÄ™dz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartoÅ›Ä‡: " << iter->second->get_value() << endl;
 	}
 	save.close();
 }
