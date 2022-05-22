@@ -227,11 +227,14 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 		std::wstring wide = converter.from_bytes(s);
 
 		if (iter->second->type == "DECISION") {
-				save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << "\"] ";
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide;
+			if (iter->second->get_costs() != 0) {
+				save << " koszt: " << iter->second->get_costs() << "\"] ";
+			}else save << "\"] ";
 
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << " " <<
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << " P = " <<
 					iter->second->get_probability() << "\"] ";
 		}
 		if (iter->second->winner) {
