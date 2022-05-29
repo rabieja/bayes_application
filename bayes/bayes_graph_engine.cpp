@@ -106,7 +106,7 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 				cout << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
 				while (answer != "tak" && answer != "nie") {
 					cout << "Czy chcesz zredukować błąd dodając węzeł pomocniczy, którego wartość monetarna jest równa 0? (tak/nie)" << endl;
-					cin >> answer;
+					getline(cin, answer);
 				}
 				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
 					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
