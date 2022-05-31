@@ -47,3 +47,8 @@ void chance_edge::set_helper(bool helper_value)
 {
 	this->helper = helper_value;
 }
+
+string chance_edge::get_type()
+{
+	return "KrawêdŸ losowa";
+}

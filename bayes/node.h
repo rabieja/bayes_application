@@ -23,5 +23,6 @@ public:
 	virtual void find_winner() = 0;
 	virtual void set_helper(bool helper_value) = 0;
 	tree_element* get_prev() { return prev; }
+	virtual string get_type() = 0;
 };
 

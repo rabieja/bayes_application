@@ -80,3 +80,8 @@ void chance_node::set_helper(bool helper_value)
 {
 	this->helper = helper_value;
 }
+
+string chance_node::get_type()
+{
+	return "Wêze³ losowy";
+}

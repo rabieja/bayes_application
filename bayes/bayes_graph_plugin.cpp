@@ -229,16 +229,7 @@ void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
 	cout << endl;
 	string type;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
-		if (iter->second->type == "END" ) {
-			type = "Wêze³ koñcowy";
-		}
-		else if (iter->second->type == "DECISION") {
-			type = "Wêze³ decyzyjny";
-		}
-		else if (iter->second->type == "CHANCE") {
-			type = "Wêze³ losowy";
-		}
-		cout << "id:" << iter->first << "  opis: " << iter->second->description << "  typ: " << type << endl;
+		cout << "id:" << iter->first << "  opis: " << iter->second->description << "  typ: " << iter->second->get_type() << endl;
 	}
 	cout << endl;
 }
@@ -325,10 +316,10 @@ void bayes_graph_plugin::manual_generate_root() {
 void bayes_graph_plugin::manual_generate_decision_nodes() {
 	string n_decision = "";
 
-	while (n_decision != "nie") {
+	while (n_decision != "nie" && n_decision != "NIE") {
 		cout << "Czy chcesz dodaæ kolejny wêze³ decyzyjny?" << endl;
 		getline(cin, n_decision);
-		if (n_decision == "tak") {
+		if (n_decision == "tak" || n_decision == "TAK") {
 			generate_decision_node(false);
 		}
 	}
@@ -337,21 +328,21 @@ void bayes_graph_plugin::manual_generate_chance_nodes() {
 	string n_chance = "";
 	cout << "Dodaj wêz³y losowe..." << endl;
 
-	while (n_chance != "tak" && n_chance != "nie") {
+	while (n_chance != "tak" && n_chance != "nie" && n_chance != "TAK" && n_chance != "NIE") {
 		cout << "Czy chcesz dodaæ wêze³ losowy?" << endl;
 		getline(cin, n_chance);
-		if (n_chance == "tak") {
+		if (n_chance == "tak" || n_chance == "TAK") {
 			generate_chance_node();
 		}
 	}
-	if (n_chance != "nie") {
+	if (n_chance != "nie" && n_chance != "NIE") {
 		n_chance = "";
 	}
 
-	while (n_chance != "nie") {
+	while (n_chance != "nie" && n_chance != "NIE") {
 		cout << "Czy chcesz dodaæ kolejny wêze³ losowy?" << endl;
 		getline(cin, n_chance);
-		if (n_chance == "tak") {
+		if (n_chance == "tak" || n_chance == "TAK") {
 			generate_chance_node();
 		}
 	}
@@ -362,20 +353,20 @@ void bayes_graph_plugin::manual_generate_end_nodes() {
 	string n_end = "";
 	cout << "Dodaj wêz³y koñcowe..." << endl;
 
-	while (n_end != "tak" && n_end != "nie") {
+	while (n_end != "tak" && n_end != "nie" && n_end != "TAK" && n_end != "NIE") {
 		cout << "Czy chcesz dodaæ wêze³ koñcowy?" << endl;
 		getline(cin, n_end);
-		if (n_end == "tak") {
+		if (n_end == "tak" || n_end == "TAK") {
 			generate_end_node();
 		}
 	}
-	if (n_end != "nie") {
+	if (n_end != "nie" && n_end != "NIE") {
 		n_end = "";
 	}
-	while (n_end != "nie") {
+	while (n_end != "nie" && n_end != "NIE") {
 		cout << "Czy chcesz dodaæ kolejny wêze³ koñcowy?" << endl;
 		getline(cin, n_end);
-		if (n_end == "tak") {
+		if (n_end == "tak" || n_end == "TAK") {
 			generate_end_node();
 		}
 	}
@@ -395,17 +386,7 @@ void bayes_graph_plugin::manuale_generate_edges() {
 	while (!helper_nodes.empty() && !helper_nodes_map.empty()) {
 		string type_description;
 
-		if (helper_nodes[0]->type == "END") {
-			type_description = "Wêze³ koñcowy";
-		}
-		else if (helper_nodes[0]->type == "DECISION") {
-			type_description = "Wêze³ decyzyjny";
-		}
-		else if (helper_nodes[0]->type == "CHANCE") {
-			type_description = "Wêze³ losowy";
-		}
-
-		cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << type_description << endl;
+		cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << helper_nodes[0]->get_type() << endl;
 		show_all_nodes(helper_nodes_map);
 		while (next_id = get_int_number()) {
 			if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
@@ -414,12 +395,12 @@ void bayes_graph_plugin::manuale_generate_edges() {
 		}
 		add_edge(helper_nodes[0]->id, next_id);
 
-		while (edge_answer != "nie" && !helper_nodes_map.empty()) {
-			while (edge_answer != "nie" && edge_answer != "tak") {
+		while ((edge_answer != "nie" || edge_answer != "NIE" ) && !helper_nodes_map.empty()) {
+			while (edge_answer != "nie" && edge_answer != "tak" && edge_answer != "NIE" && edge_answer != "TAK") {
 				cout << "Czy chcesz dodaæ kolejne po³¹czenie do tego wêz³a?" << endl;
 				getline(cin, edge_answer);
 			}
-			if (edge_answer == "nie") {
+			if (edge_answer == "nie" || edge_answer == "NIE") {
 				edge_answer = "";
 				break;
 			}
@@ -485,19 +466,19 @@ void bayes_graph_plugin::save_graph_to_file() {
 
 void bayes_graph_plugin::generate_report() {
 	string str;
-	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raport z wynikami" << endl;
+	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raporty z wynikami" << endl;
 	getline(cin, str);
 	char* data_file = const_cast<char*>(str.c_str());
 	while (_access(data_file, 00) != 0) {
 		if (_access(data_file, 00) == 0) {
 			break;
 		}
-		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raport z wynikami" << endl;
+		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raporty z wynikami" << endl;
 		getline(cin, str);
 		char* data_file = const_cast<char*>(str.c_str());
 	}
 	engine.generate_report(edges_map, nodes_map, tree, data_file);
-	cout << "Generowanie raportu powiod³o siê." << endl;
+	cout << "Generowanie raportów powiod³o siê." << endl;
 }
 void bayes_graph_plugin::run()
 {
@@ -505,14 +486,14 @@ void bayes_graph_plugin::run()
 	cout << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;
 	cout << endl;
 
-	while (answer != "tak" && answer != "nie") {
+	while (answer != "tak" && answer != "nie" && answer != "TAK" && answer != "NIE") {
 		cout << "Czy chcesz wygenerowaæ drzewo decyzyjne z danych zapisanych w pliku? (tak/nie)" << endl;
 		getline(cin, answer);
-		if (answer == "tak") {
+		if (answer == "tak" || answer == "TAK") {
 			generate_tree_from_file();
 			generate_report();
 		}
-		else if (answer == "nie") {
+		else if (answer == "nie" || answer == "NIE") {
 			manual_generation_tree();
 			generate_report();
 			save_graph_to_file();

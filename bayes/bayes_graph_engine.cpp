@@ -26,7 +26,6 @@ void bayes_graph_engine::find_decision(vector<tree_element*> tree)
 
 bool bayes_graph_engine::validation(vector<tree_element*>& tree, map<int, edge*>& edges, map<int, node*>& nodes)
 {
-//	setlocale(LC_CTYPE, "Polish");
 	if (!validate_nodes(tree, nodes, edges) || !validate_edges(edges)) {
 		return false;
 	}
@@ -104,7 +103,7 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 			else if (sum < 1) {
 				string answer = "";
 				cout << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
-				while (answer != "tak" && answer != "nie") {
+				while (answer != "tak" && answer != "nie" && answer != "TAK" && answer != "NIE") {
 					cout << "Czy chcesz zredukować błąd dodając węzeł pomocniczy, którego wartość monetarna jest równa 0? (tak/nie)" << endl;
 					getline(cin, answer);
 				}
@@ -347,23 +346,32 @@ void bayes_graph_engine::generate_report(map<int, edge*>& edges_map, map<int, no
 			winners.push_back(winner);
 		}
 	}
-	ofstream save(file_name + "/decision_report.txt");
+	ofstream decision(file_name + "/najlepsza_decyzja_raport.txt");
 	for (int i = 0; i <= winners.size() - 1; i++) {
 		int number = 1;
-		save << "Najlepsza możliwa decyzja:" << endl;
+		decision << "Najlepsza możliwa decyzja:" << endl;
 		for (int j = winners[i].size() - 1; j >= 0; j--) {
-			save << number << ". (id: " << winners[i][j]->id << ") opis: " << winners[i][j]->description << " wartość:" << winners[i][j]->get_value() << endl;
+			decision << number << ". (id: " << winners[i][j]->id << ") " << winners[i][j]->get_type() << " opis: " << winners[i][j]->description << "  wartość: " << winners[i][j]->get_value() << endl;
 			number++;
-		}save << endl;
+		}decision << endl;
 	}
-	save << endl;
-	save << "Wyniki poszczególnych etapów obliczeń:" << endl;
+	decision << endl;
+	decision.close();
+
+	ofstream calculations(file_name + "/etapy_obliczen_raport.txt");
+
+	calculations << "Wyniki poszczególnych etapów obliczeń:" << endl;
 
 	for (map<int, node*>::iterator iter = nodes_map.begin(); iter != nodes_map.end(); ++iter) {
-		save << "Węzeł (id: " << iter->second->id << ") opis: " << iter->second->description << " wartość: " << iter->second->value << endl;
-	}save << endl;
+		calculations << iter->second->get_type() << " (id: " << iter->second->id << ") opis: " << iter->second->description << " wartość: " << iter->second->value << endl;
+	}calculations << endl;
 	for (map<int, edge*>::iterator iter = edges_map.begin(); iter != edges_map.end(); ++iter) {
-			save << "Krawędz (id: " << iter->second->id << ") opis: " << iter->second->description << " wartość: " << iter->second->get_value() << endl;
+		if (iter->second->type == "DECISION") {
+			calculations << iter->second->get_type() << " koszt: " << iter->second->get_costs() << " (id: " << iter->second->id << ") opis: " << iter->second->description << " wartość: " << iter->second->get_value() << endl;
+		}
+		else {
+			calculations << iter->second->get_type() << " prawdopodobieństwo: " << iter->second->get_probability() << " (id: " << iter->second->id << ") opis: " << iter->second->description << " wartość: " << iter->second->get_value() << endl;
+		}
 	}
-	save.close();
+	calculations.close();
 }

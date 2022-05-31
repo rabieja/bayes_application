@@ -20,5 +20,6 @@ public:
 	virtual void find_winner() = 0;
 	virtual tree_element * get_prev() = 0;
 	bool get_winner();
+	virtual string get_type() = 0;
 };
 

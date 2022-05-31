@@ -48,3 +48,8 @@ void decision_edge::set_helper(bool helper_value)
 {
 	this->helper = helper_value;
 }
+
+string decision_edge::get_type()
+{
+	return "KrawêdŸ decyzyjna";
+}

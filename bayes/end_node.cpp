@@ -34,3 +34,8 @@ void end_node::set_helper(bool helper_value)
 {
 	this->helper = helper_value;
 }
+
+string end_node::get_type()
+{
+	return "Wêze³ koñcowy";
+}
