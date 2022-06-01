@@ -20,9 +20,9 @@ public:
 	void generate_decision_node(bool root);
 	void generate_chance_node();
 	void generate_end_node();
+	void generate_tree_from_file();
 	double get_number();
 	int get_int_number();
-	void generate_tree_from_file();
 	void manual_generate_root();
 	void manual_generate_decision_nodes();
 	void manual_generate_chance_nodes();

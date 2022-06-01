@@ -39,6 +39,7 @@ bool bayes_graph_engine::validate_nodes(vector<tree_element*>& tree, map<int, no
 }
 
 bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
+	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
 
 	string description = "";
 	bool result = true;
@@ -46,6 +47,8 @@ bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
 		description = iter->second->description;
 		if (iter->second->type != "END" && iter->second->next.empty()) {
 			cout << "Wprowadzone dane sa nieprawidłowe, węzeł \" " << description << " \" nie posiada następników." << endl;
+			logs << "Wprowadzone dane sa nieprawidłowe, węzeł \" " << description << " \" nie posiada następników." << endl;
+
 			result = false;
 		}
 	}
@@ -53,6 +56,7 @@ bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
 }
 
 bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
+	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
 
 	string description = "";
 	bool result = true;
@@ -60,6 +64,8 @@ bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
 		description = iter->second->description;
 		if (!iter->second->is_root() && iter->second->prev == NULL) {
 			cout << "Wprowadzone dane sa nieprawidłowe, węzeł \" " << description << " \" nie posiada poprzednika." << endl;
+			logs << "Wprowadzone dane sa nieprawidłowe, węzeł \" " << description << " \" nie posiada poprzednika." << endl;
+
 			result = false;
 		}
 	}
@@ -83,6 +89,7 @@ void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<i
 	node_prev->add_next_element(edge_element);
 }
 bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges) {
+	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
 
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "CHANCE") {
@@ -92,6 +99,7 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 				for (int i = 0; i <= iter->second->next.size() - 1; i++) {
 					if (iter->second->next[i]->type != "CHANCE") {
 						cout << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << iter->second->next[i]->description << " \" jest złego typu. Wymagany typ to gałąź losowa." << endl;
+						logs << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << iter->second->next[i]->description << " \" jest złego typu. Wymagany typ to gałąź losowa." << endl;
 						return false;
 					}
 					else sum += iter->second->next[i]->get_probability();
@@ -99,13 +107,20 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 			}
 			if (sum > 1) {
 				cout << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest większa od 1.0." << endl;
+				logs << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest większa od 1.0." << endl;
+
 			}
 			else if (sum < 1) {
 				string answer = "";
 				cout << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
+				logs << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest mniejsza od 1.0." << endl;
+
 				while (answer != "tak" && answer != "nie" && answer != "TAK" && answer != "NIE") {
 					cout << "Czy chcesz zredukować błąd dodając węzeł pomocniczy, którego wartość monetarna jest równa 0? (tak/nie)" << endl;
+					logs << "Czy chcesz zredukować błąd dodając węzeł pomocniczy, którego wartość monetarna jest równa 0? (tak/nie)" << endl;
+
 					getline(cin, answer);
+					logs << answer << endl;
 				}
 				if (answer == "tak" || answer == "Tak" || answer == "TAK") {
 					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
@@ -126,16 +141,22 @@ int bayes_graph_engine::search_next_id(vector<tree_element*>& tree) {
 
 bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 {
+	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+
 	bool result = true;
 	string description = "";
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
 		description = iter->second->description;
 		if (iter->second->prev == NULL) {
 			cout << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << description << " \" nie posiada poprzednika." << endl;
+			logs << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << description << " \" nie posiada poprzednika." << endl;
+
 			result = false;
 		}
 		if (iter->second->next == NULL) {
 			cout << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << description << " \" nie posiada następnika." << endl;
+			logs << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << description << " \" nie posiada następnika." << endl;
+
 			result = false;
 		}
 	}
