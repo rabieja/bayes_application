@@ -502,11 +502,7 @@ void bayes_graph_plugin::manuale_generate_edges() {
 				edge_answer = "";
 				break;
 			}
-			cout << "Dostêpne wêz³y:" << endl;
-			logs << "Dostêpne wêz³y:" << endl;
 			show_all_nodes(helper_nodes_map);
-			cout << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
-			logs << "Podaj id wêz³a z którym chcesz po³¹czyæ ten wêze³" << endl;
 
 			while (next_id = get_int_number()) {
 				if (erase_node(helper_nodes_map, helper_nodes, next_id)) {
