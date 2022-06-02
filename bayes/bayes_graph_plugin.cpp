@@ -254,9 +254,11 @@ bool bayes_graph_plugin::erase_node(map <int, node*>& nodes, vector <node*>& hel
 void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
 	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
 
+	cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
 	cout << endl;
 	cout << "LISTA DOSTÊPNYCH WIERZCHO£KÓW" << endl;
 	cout << endl;
+	logs << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
 	logs << endl;
 	logs << "LISTA DOSTÊPNYCH WIERZCHO£KÓW" << endl;
 	logs << endl;
@@ -268,7 +270,10 @@ void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
 
 	}
 	cout << endl;
+	cout << "Podaj ID wêz³a..." << endl;
 	logs << endl;
+	logs << "Podaj ID wêz³a..." << endl;
+
 
 }
 void bayes_graph_plugin::generate_graph() {
@@ -285,16 +290,13 @@ void bayes_graph_plugin::generate_graph() {
 		getline(cin, str);
 		logs << str << endl;
 		char* data_file = const_cast<char*>(str.c_str());
-		while (_access(data_file, 00) != 0) {
-			if (_access(data_file, 00) == 0) {
-				break;
-			}
 
+		while (_access(data_file, 00) != 0) {
 			cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ drzewo decyzyjne" << endl;
 			logs << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ drzewo decyzyjne" << endl;
 			getline(cin, str);
 			logs << str << endl;
-			char* data_file = const_cast<char*>(str.c_str());
+			data_file = const_cast<char*>(str.c_str());
 		}
 
 		engine.create_dot_graph(data_file, tree, edges_map, nodes_map);
@@ -478,8 +480,8 @@ void bayes_graph_plugin::manuale_generate_edges() {
 	while (!helper_nodes.empty() && !helper_nodes_map.empty()) {
 		string type_description;
 
-		cout << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << helper_nodes[0]->get_type() << endl;
-		logs << "Podaj id wêz³a z którym chcesz po³¹czyæ wêze³: id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << helper_nodes[0]->get_type() << endl;
+		cout << "Wybierz nastêpnik dla wêz³a:  id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << helper_nodes[0]->get_type() << endl;
+		logs << "Wybierz nastêpnik dla wêz³a:  id: " << helper_nodes[0]->id << " nazwa: " << helper_nodes[0]->description << " typ: " << helper_nodes[0]->get_type() << endl;
 
 		show_all_nodes(helper_nodes_map);
 		while (next_id = get_int_number()) {
@@ -538,17 +540,17 @@ void bayes_graph_plugin::manual_generation_tree() {
 	cout << "Po³¹cz ze sob¹ wêz³y..." << endl;
 	cout << endl;
 	cout << "Aby wybraæ wêze³ z którym po³¹czysz podany przez aplikacje wêze³ wpisz jego id." << endl;
+	cout << endl;
 	cout << "Na pocz¹tek po³¹cz korzeñ drzewa z kolejnymi wêz³ami" << endl;
 	cout << endl;
-	cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
 	cout << endl;
 
 	logs << "Po³¹cz ze sob¹ wêz³y..." << endl;
 	logs << endl;
 	logs << "Aby wybraæ wêze³ z którym po³¹czysz podany przez aplikacje wêze³ wpisz jego id." << endl;
+	logs << endl;
 	logs << "Na pocz¹tek po³¹cz korzeñ drzewa z kolejnymi wêz³ami" << endl;
 	logs << endl;
-	logs << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
 	logs << endl;
 
 	manuale_generate_edges();
@@ -568,14 +570,11 @@ void bayes_graph_plugin::save_graph_to_file() {
 	logs << str << endl;
 	char* data_file = const_cast<char*>(str.c_str());
 	while (_access(data_file, 00) != 0) {
-		if (_access(data_file, 00) == 0) {
-			break;
-		}
 		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
 		logs << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
 		getline(cin, str);
 		logs << str << endl;
-		char* data_file = const_cast<char*>(str.c_str());
+		data_file = const_cast<char*>(str.c_str());
 	}
 	engine.save_graph_to_file(edges_map, nodes_map, tree, data_file);
 	cout << "Zapis danych powiód³ siê." << endl;
@@ -593,15 +592,12 @@ void bayes_graph_plugin::generate_report() {
 	logs << str << endl;
 	char* data_file = const_cast<char*>(str.c_str());
 	while (_access(data_file, 00) != 0) {
-		if (_access(data_file, 00) == 0) {
-			break;
-		}
 		cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raporty z wynikami" << endl;
 		logs << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raporty z wynikami" << endl;
 
 		getline(cin, str);
 		logs << str << endl;
-		char* data_file = const_cast<char*>(str.c_str());
+		data_file = const_cast<char*>(str.c_str());
 	}
 	engine.generate_report(edges_map, nodes_map, tree, data_file);
 	cout << "Generowanie raportów powiod³o siê." << endl;
