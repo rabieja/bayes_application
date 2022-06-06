@@ -89,7 +89,7 @@ bool bayes_graph_plugin::generate_from_file(string file_name) {
 				tree.push_back(node_element);
 			}continue;
 		}
-		else if (type == "edge_chance") {
+		else if (type == "chance_edge") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> prev_tree_element >> next_tree_element >> probability;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');
@@ -108,7 +108,7 @@ bool bayes_graph_plugin::generate_from_file(string file_name) {
 				tree.push_back(edge_element);
 			}continue;
 		}
-		else if (type == "edge_decision") {
+		else if (type == "decision_edge") {
 			for (int i = 0; i <= size - 1; i++) {
 				data_file >> id >> prev_tree_element >> next_tree_element >> cost_of_additional_information;
 				data_file.ignore(numeric_limits < streamsize >::max(), '\n');

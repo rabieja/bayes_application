@@ -108,7 +108,7 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 			if (sum > 1) {
 				cout << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest większa od 1.0." << endl;
 				logs << "Wprowadzone dane sa nieprawidłowe, suma prawdopodobieństw w węźle \" " << iter->second->description << " \" jest większa od 1.0." << endl;
-
+				return false;
 			}
 			else if (sum < 1) {
 				string answer = "";
@@ -126,6 +126,17 @@ bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, m
 					generate_helper_node(tree, nodes, edges, iter->second, 1-sum);
 				}
 				else return false;
+			}
+		}
+		else if (iter->second->type == "DECISION") {
+			if (!iter->second->next.empty()) {
+				for (int i = 0; i <= iter->second->next.size() - 1; i++) {
+					if (iter->second->next[i]->type != "DECISION") {
+						cout << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << iter->second->next[i]->description << " \" jest złego typu. Wymagany typ to gałąź decyzyjna." << endl;
+						logs << "Wprowadzone dane sa nieprawidłowe, gałąź \" " << iter->second->next[i]->description << " \" jest złego typu. Wymagany typ to gałąź decyzyjna." << endl;
+						return false;
+					}
+				}
 			}
 		}
 	}
@@ -334,14 +345,14 @@ void bayes_graph_engine::save_graph_to_file(map < int, edge *> &edges_map, map <
 	}
 
 
-	save << "edge_chance" << " " << chance_edges.size() << endl;
+	save << "chance_edge" << " " << chance_edges.size() << endl;
 	for (int i = 0; i <= chance_edges.size() - 1; i++) {
 		save << chance_edges[i]->id << " " << chance_edges[i]->prev->id << " " << chance_edges[i]->next->id << " " << chance_edges[i]->get_probability() << endl;
 		save << chance_edges[i]->description << endl;
 	}
 
 
-	save << "edge_decision" << " " << decision_edges.size() << endl;
+	save << "decision_edge" << " " << decision_edges.size() << endl;
 	for (int i = 0; i <= decision_edges.size() - 1; i++) {
 		save << decision_edges[i]->id << " " << decision_edges[i]->prev->id << " " << decision_edges[i]->next->id << " " << decision_edges[i]->get_costs() << endl;
 		save << decision_edges[i]->description << endl;
