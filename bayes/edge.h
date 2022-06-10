@@ -13,9 +13,9 @@ public:
 	virtual bool is_edge() = 0;
 	bool is_root();
 	void set_value();
-	virtual double get_value() = 0;
-	virtual double get_probability() = 0; 
-	virtual double get_costs() = 0;
+	virtual long double get_value() = 0;
+	virtual long double get_probability() = 0;
+	virtual long double get_costs() = 0;
 	void find_winner();
 	virtual void set_helper(bool helper_value) = 0;
 	string type;

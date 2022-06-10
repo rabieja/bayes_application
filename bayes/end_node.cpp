@@ -1,6 +1,6 @@
 #include "end_node.h"
 
-end_node::end_node(int id, double value)
+end_node::end_node(int id, long double value)
 {
 	this->id = id;
 	this->value = value;

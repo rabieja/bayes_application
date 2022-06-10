@@ -7,13 +7,13 @@ using namespace std;
 class decision_edge : public edge
 {
 public:
-	decision_edge(int id, tree_element* prev, tree_element* next, double additional_information_cost, string description);
+	decision_edge(int id, tree_element* prev, tree_element* next, long double additional_information_cost, string description);
 	bool is_node();
 	bool is_edge();
-	double costs;
-	double get_value();
-	double get_probability();
-	double get_costs();
+	long double costs;
+	long double get_value();
+	long double get_probability();
+	long double get_costs();
 	void set_helper(bool helper_value);
 	string get_type();
 

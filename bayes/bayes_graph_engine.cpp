@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <locale>
 #include <codecvt>
+#include <iomanip> 
 
 using namespace std;
 
@@ -39,7 +40,7 @@ bool bayes_graph_engine::validate_nodes(vector<tree_element*>& tree, map<int, no
 }
 
 bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string description = "";
 	bool result = true;
@@ -56,7 +57,7 @@ bool bayes_graph_engine::validate_next_elements(map<int, node*>& nodes) {
 }
 
 bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string description = "";
 	bool result = true;
@@ -71,7 +72,7 @@ bool bayes_graph_engine::validate_prev_element(map<int, node*>& nodes) {
 	}
 	return result;
 }
-void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges, node* node_prev, double probability) {
+void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges, node* node_prev, long double probability) {
 
 	int id = search_next_id(tree);
 
@@ -89,12 +90,12 @@ void bayes_graph_engine::generate_helper_node(vector<tree_element*>& tree, map<i
 	node_prev->add_next_element(edge_element);
 }
 bool bayes_graph_engine::validate_sum_probability(vector<tree_element*>& tree, map<int, node*>& nodes, map<int, edge*>& edges) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 		if (iter->second->type == "CHANCE") {
 
-			double sum = 0;
+			long double sum = 0;
 			if (!iter->second->next.empty()) {
 				for (int i = 0; i <= iter->second->next.size() - 1; i++) {
 					if (iter->second->next[i]->type != "CHANCE") {
@@ -152,7 +153,7 @@ int bayes_graph_engine::search_next_id(vector<tree_element*>& tree) {
 
 bool bayes_graph_engine::validate_edges(map<int, edge*> edges)
 {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	bool result = true;
 	string description = "";
@@ -236,7 +237,7 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 			std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>> converter(&cctv);
 			std::wstring wide = converter.from_bytes(s);
 
-			save << iter->second->id << "[shape=circle label = \"" << wide << "\" xlabel=\" " << iter->second->value << "\"] " << endl;
+			save << iter->second->id << "[shape=circle label = \"" << wide << "\" xlabel=\" " <<  iter->second->value << "\"] " << endl;
 		}
 		else {
 			save << iter->second->id << "[shape=none label=\" " << iter->second->value << "\"] " << endl;
@@ -265,7 +266,7 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 
 		}
 		else if (iter->second->type == "CHANCE") {
-			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << " P = " <<
+			save << iter->second->prev->id << " -- " << iter->second->next->id << "[label=\"" << wide << " P = " <<  
 					iter->second->get_probability() << "\"] ";
 		}
 		if (iter->second->winner) {

@@ -17,11 +17,12 @@
 #include "bayes_graph_engine.h"
 #include <locale.h>
 #include <io.h>
-
+#include "tree_element.h"
 
 using namespace std;
 
 int id = 0;
+
 
 bayes_graph_plugin::bayes_graph_plugin() {
 	map <int, edge*> edges_map;
@@ -39,7 +40,7 @@ bayes_graph_plugin::bayes_graph_plugin() {
 bool bayes_graph_plugin::generate_from_file(string file_name) {
 	string type = "", chance_node_description, decision_node_description, edge_description;
 	char root;
-	double end_node_value, cost_of_additional_information, probability;
+	long double end_node_value, cost_of_additional_information, probability;
 	int size, id, prev_tree_element, next_tree_element;
 
 	fstream data_file;
@@ -132,9 +133,9 @@ bool bayes_graph_plugin::generate_from_file(string file_name) {
 
 	return true;
 }
-double bayes_graph_plugin::get_number() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
-	double number;
+long double bayes_graph_plugin::get_number() {
+	ofstream logs("logs.txt", ios::out | ios::app);
+	long double number;
 
 	cin >> number;
 	logs << number << endl;
@@ -155,7 +156,7 @@ double bayes_graph_plugin::get_number() {
 	return number;
 }
 int bayes_graph_plugin::get_int_number() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	int number;
 	cin >> number;
@@ -179,10 +180,10 @@ int bayes_graph_plugin::get_int_number() {
 	return number;
 }
 void bayes_graph_plugin::add_chance_edge(node* prev, node* next, string description) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	id++;
-	double probability = 2;
+	long double probability = 2;
 	while (probability > 1 || probability < 0) {
 		cout << "Podaj prawdopodobieñstwo (wartoœæ z przedzia³u <0, 1>)..." << endl;
 		logs << "Podaj prawdopodobieñstwo (wartoœæ z przedzia³u <0, 1>)..." << endl;
@@ -198,10 +199,10 @@ void bayes_graph_plugin::add_chance_edge(node* prev, node* next, string descript
 }
 
 void bayes_graph_plugin::add_decision_edge(node* prev, node* next, string description) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	id++;
-	double cost;
+	long double cost;
 	cout << "Podaj koszty uzyskania dodatkowych informacji, jeœli nie istniej¹ podaj \"0\"..." << endl;
 	logs << "Podaj koszty uzyskania dodatkowych informacji, jeœli nie istniej¹ podaj \"0\"..." << endl;
 
@@ -215,7 +216,7 @@ void bayes_graph_plugin::add_decision_edge(node* prev, node* next, string descri
 }
 
 void bayes_graph_plugin::add_edge(int prev_id, int next_id) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string description;
 	cout << "Podaj opis krawêdzi..." << endl;
@@ -235,7 +236,7 @@ void bayes_graph_plugin::add_edge(int prev_id, int next_id) {
 	}
 }
 bool bayes_graph_plugin::erase_node(map <int, node*>& nodes, vector <node*>& helper_nodes, int id) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	if (nodes.count(id) == 0) {
 		cout << "Podany wêze³ nie istnieje lub posiada ju¿ poprzednika. Spróbuj ponownie." << endl;
@@ -252,7 +253,7 @@ bool bayes_graph_plugin::erase_node(map <int, node*>& nodes, vector <node*>& hel
 	}
 }
 void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	cout << "Poni¿ej znajduje siê lista wêz³ów, które nie posiadaj¹ jeszcze poprzednika." << endl;
 	cout << endl;
@@ -277,7 +278,7 @@ void bayes_graph_plugin::show_all_nodes(map <int, node*>& nodes) {
 
 }
 void bayes_graph_plugin::generate_graph() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string answer, file_name;
 	if (engine.validation(tree, edges_map, nodes_map)) {
@@ -313,7 +314,7 @@ void bayes_graph_plugin::generate_graph() {
 	}
 }
 void bayes_graph_plugin::generate_decision_node(bool root) {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string description;
 	id++;
@@ -328,7 +329,7 @@ void bayes_graph_plugin::generate_decision_node(bool root) {
 }
 
 void bayes_graph_plugin::generate_chance_node() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string description;
 	id++;
@@ -343,9 +344,9 @@ void bayes_graph_plugin::generate_chance_node() {
 }
 
 void bayes_graph_plugin::generate_end_node() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
-	double value;
+	long double value;
 	id++;
 	cout << "Podaj wartoœæ wêz³a" << endl;
 	logs << "Podaj wartoœæ wêz³a" << endl;
@@ -357,7 +358,7 @@ void bayes_graph_plugin::generate_end_node() {
 }
 
 void bayes_graph_plugin::generate_tree_from_file() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 	string data_file;
 
 	cout << "Podaj œcie¿kê do pliku z którego chcesz wygenerowaæ drzewo..." << endl;	
@@ -376,14 +377,14 @@ void bayes_graph_plugin::generate_tree_from_file() {
 }
 
 void bayes_graph_plugin::manual_generate_root() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	cout << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
 	logs << "Zacznij od wêz³a pocz¹tkowego - korzenia." << endl;
 	generate_decision_node(true);
 }
 void bayes_graph_plugin::manual_generate_decision_nodes() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("%temp%\\losg.txt", ios::out | ios::app);
 
 	string n_decision = "";
 
@@ -399,7 +400,7 @@ void bayes_graph_plugin::manual_generate_decision_nodes() {
 	}
 }
 void bayes_graph_plugin::manual_generate_chance_nodes() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string n_chance = "";
 	cout << "Dodaj wêz³y losowe..." << endl;
@@ -433,7 +434,7 @@ void bayes_graph_plugin::manual_generate_chance_nodes() {
 }
 
 void bayes_graph_plugin::manual_generate_end_nodes() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string n_end = "";
 	cout << "Dodaj wêz³y koñcowe..." << endl;
@@ -466,7 +467,7 @@ void bayes_graph_plugin::manual_generate_end_nodes() {
 }
 
 void bayes_graph_plugin::manuale_generate_edges() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string e_change = "", e_decision = "", edge_answer = "";
 
@@ -517,7 +518,7 @@ void bayes_graph_plugin::manuale_generate_edges() {
 	}
 }
 void bayes_graph_plugin::manual_generation_tree() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string n_end = "",  e_change = "", e_decision = "";
 	cout << "Zosta³ uruchomiony tryb rêcznego generowania danych." << endl;
@@ -556,7 +557,7 @@ void bayes_graph_plugin::manual_generation_tree() {
 
 
 void bayes_graph_plugin::save_graph_to_file() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string str;
 	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ dane" << endl;
@@ -578,7 +579,7 @@ void bayes_graph_plugin::save_graph_to_file() {
 }
 
 void bayes_graph_plugin::generate_report() {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt", ios::out | ios::app);
+	ofstream logs("logs.txt", ios::out | ios::app);
 
 	string str;
 	cout << "Podaj œcie¿kê do folderu w którym chcesz zapisaæ raporty z wynikami" << endl;
@@ -601,7 +602,7 @@ void bayes_graph_plugin::generate_report() {
 }
 void bayes_graph_plugin::run()
 {
-	ofstream logs("C:\\Users\\Agniesia\\Desktop\\1\\logs.txt");
+	ofstream logs("logs.txt");
 	string answer= "";
 	cout << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;
 	logs << "Witaj w programie wspomagaj¹cym podejmowanie decyzji z wykorzystaniem metody Bayesa." << endl;

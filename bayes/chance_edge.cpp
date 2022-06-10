@@ -1,7 +1,7 @@
 #include "chance_edge.h"
 #include <iostream>
 
-chance_edge::chance_edge(int id, tree_element* prev, tree_element* next, double probability, string description)
+chance_edge::chance_edge(int id, tree_element* prev, tree_element* next, long double probability, string description)
 {
 	this->id = id;
 	this->prev = prev;
@@ -23,9 +23,9 @@ bool chance_edge::is_edge()
 	return true;
 }
 
-double chance_edge::get_value()
+long double chance_edge::get_value()
 {
-	double next_value = this->next->get_value();
+	long double next_value = this->next->get_value();
 	if (next_value == NULL) {
 		this->next->set_value();
 		next_value = this->next->get_value();
@@ -33,12 +33,12 @@ double chance_edge::get_value()
 	return next_value * this->probability;
 }
 
-double chance_edge::get_probability()
+long double chance_edge::get_probability()
 {
 	return probability;
 }
 
-double chance_edge::get_costs()
+long double chance_edge::get_costs()
 {
 	return 0.0;
 }

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "bayes_graph_plugin.h"
-#include "edge.h"
 #include <string>
 #include <Windows.h>
 #include <cstdio>

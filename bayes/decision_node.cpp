@@ -7,7 +7,7 @@
 #include <iostream>
 #include "decision_edge.h"
 
-const double lowest_double = -std::numeric_limits<double>::max();
+const long double lowest_double = -std::numeric_limits<long double>::max();
 using namespace std;
 
 decision_node::decision_node(int id, bool root, string description)
@@ -39,10 +39,10 @@ bool decision_node::is_root()
 
 void decision_node::set_value()
 {
-	double this_value = lowest_double;
+	long double this_value = lowest_double;
 	for (int i = 0; i <= this->next.size() - 1; i++) {
 		if (this->next[i]->is_edge()) {
-			double value = this->next[i]->get_value();
+			long double value = this->next[i]->get_value();
 			if (value == NULL) {
 				this->next[i]->set_value();
 				value = this->next[i]->get_value();
@@ -57,11 +57,11 @@ void decision_node::set_value()
 void decision_node::find_winner() {
 
 	vector <tree_element*> next;
-	double this_value = lowest_double;
+	long double this_value = lowest_double;
 
 	for (int i = 0; i <= this->next.size() - 1; i++) {
 		if (this->next[i]->is_edge()) {
-			double value = this->next[i]->get_value();
+			long double value = this->next[i]->get_value();
 
 			if (value == this_value) {
 				next.push_back(this->next[i]);
