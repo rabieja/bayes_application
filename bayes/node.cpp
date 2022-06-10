@@ -10,7 +10,7 @@ void node::add_prev_element(edge* prev)
 	this->prev = prev;
 }
 
-double node::get_value()
+long double node::get_value()
 {
 	return this->value;
 }
