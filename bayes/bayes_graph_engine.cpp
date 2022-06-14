@@ -196,28 +196,26 @@ tree_element* bayes_graph_engine::find_root(vector<tree_element*> tree)
 int bayes_graph_engine::create_png_graph(string file_name)
 {
 	GVC_t* gvc;
-	Agraph_t* g;
-	FILE* fp;
+	Agraph_t* graph;
+	FILE* filep;
 	gvc = gvContext();
-	fp = fopen((file_name + "/tree.dot").c_str(), "r");
-	g = agread(fp, 0);
-	gvLayout(gvc, g, "dot");
-	gvRenderFilename(gvc, g, "png", (file_name + "/tree.png").c_str());
+	filep = fopen((file_name + "/tree.dot").c_str(), "r");
+	graph = agread(filep, 0);
+	gvLayout(gvc, graph, "dot");
+	gvRenderFilename(gvc, graph, "png", (file_name + "/tree.png").c_str());
 
-	gvFreeLayout(gvc, g);
-	agclose(g);
+	gvFreeLayout(gvc, graph);
+	agclose(graph);
 	return gvFreeContext(gvc);
 }
 
 void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*> tree, map<int, edge*> edges, map<int, node*> nodes)
 {
-	// dot -Tpng dane.dot -o dane.png
 	locale lc(std::locale(), new std::codecvt_utf8<wchar_t>);
 	wofstream save(file_name + "/tree.dot");
 	save.imbue(std::locale(".utf8"));
 
 	save << "strict graph{" << endl;
-//	save << "charset = \"Latin1\";" << endl;
 	save << "rankdir = LR; " << endl;
 	for (map<int, node*>::iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
 
@@ -250,7 +248,6 @@ void bayes_graph_engine::create_dot_graph(string file_name, vector<tree_element*
 		}else save << "[color = black];" << endl;
 	}
 	for (map<int, edge*>::iterator iter = edges.begin(); iter != edges.end(); ++iter) {
-		//cout << edges[i]->prev->id << ' ' << edges[i]->next->id << endl;
 
 		string s = iter->second->description;
 		std::locale loc(".1250");
